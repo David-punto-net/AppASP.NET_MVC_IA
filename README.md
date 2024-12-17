@@ -1,2 +1,2 @@
 # AppVentas
-Repositoria para aplicacion ASP.NET 
+Repositorio para aplicacion ASP.NET 
