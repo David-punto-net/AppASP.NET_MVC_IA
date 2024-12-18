@@ -34,7 +34,7 @@
                         </td>
                         <td>
                             <a class="btn btn-outline-warning btn-sm" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
-                            @* <a class="btn btn-outline-info btn-sm" asp-action="Details" asp-route-id="@item.Id">Detalle</a> *@
+                            <a class="btn btn-outline-info btn-sm" asp-action="Details" asp-route-id="@item.Id">Detalle</a>
                             <a class="btn btn-outline-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">Borrar</a>
                         </td>
                     </tr>
@@ -45,50 +45,6 @@
 
 </div>
 
-@*
-<div class="row">
-    <div class="col-md-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Países</h3>
-            </div>
-            <div class="panel-body">
-                <table class="table table-hover table-responsive table-striped" id="MyTable">
-                    <thead>
-                        <tr>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Id)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Nombre)
-                            </th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Id)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Nombre)
-                                </td>
-                                <td>
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning">Editar</a>
-                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info">Detalles</a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger">Borrar</a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div> *@
-
 
 @section Scripts {
     @{
@@ -96,7 +52,7 @@
     }
     <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript">
-        3
+        
         $(document).ready(function () {
             $('#MyTable').DataTable({
                 "language": {

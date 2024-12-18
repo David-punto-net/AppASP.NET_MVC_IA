@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AppVentasWeb.Data;
 using AppVentasWeb.Data.Entidades;
+using System.Diagnostics.Metrics;
 
 namespace AppVentasWeb.Controllers
 {
@@ -58,10 +59,30 @@ namespace AppVentasWeb.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(pais);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+             
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "Ya existe un país con el mismo nombre.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
             }
             return View(pais);
+
         }
 
 
@@ -84,7 +105,7 @@ namespace AppVentasWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre")] Pais pais)
+        public async Task<IActionResult> Edit(int id, Pais pais)
         {
             if (id != pais.Id)
             {
@@ -97,19 +118,25 @@ namespace AppVentasWeb.Controllers
                 {
                     _context.Update(pais);
                     await _context.SaveChangesAsync();
+
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateException dbUpdateException)
                 {
-                    if (!PaisExists(pais.Id))
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        return NotFound();
+                        ModelState.AddModelError(string.Empty, "Ya existe un país con el mismo nombre.");
                     }
                     else
                     {
-                        throw;
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
+
             }
             return View(pais);
         }
@@ -148,9 +175,5 @@ namespace AppVentasWeb.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PaisExists(int id)
-        {
-            return _context.Paises.Any(e => e.Id == id);
-        }
     }
 }
