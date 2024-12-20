@@ -1,0 +1,12 @@
+﻿@model AppVentasWeb.Models.CiudadViewModel
+
+<div class="form-group row mb-3">
+    <div class="col-sm-1">
+        <label asp-for="Nombre" class="control-label"></label>
+    </div>
+
+    <div class="col-sm-8">
+        <input asp-for="Nombre" class="form-control" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+</div>

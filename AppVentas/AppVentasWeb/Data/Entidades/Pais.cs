@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Drawing;
 
 namespace AppVentasWeb.Data.Entidades
 {
@@ -8,9 +9,14 @@ namespace AppVentasWeb.Data.Entidades
         [Required]
         public int Id { get; set; }
 
-        [Required(ErrorMessage ="Debe ingresar el {0}")]
-        [StringLength(50, ErrorMessage ="El campo {0} debe tener máximo {1} caractéres")]
-        [Display(Name ="País")]
+        [Required(ErrorMessage = "Debe ingresar el {0}")]
+        [StringLength(50, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres")]
+        [Display(Name = "País")]
         public string Nombre { get; set; }
+
+        public ICollection<Region> Regiones { get; set; }
+
+        [Display(Name = "Regiones")]
+        public int NumeroDeRegiones => Regiones == null ? 0 : Regiones.Count;
     }
 }

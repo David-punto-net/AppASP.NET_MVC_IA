@@ -1,28 +1,27 @@
-﻿@model AppVentasWeb.Data.Entidades.Pais
-
+﻿@model AppVentasWeb.Data.Entidades.Region
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "DetailsRegion";
 }
 
 <div class="card mb-3">
     <div class="card-header">
-        <h5 class="card-title">Detalle País</h5>
+        <h5 class="card-title">Detalle Región</h5>
     </div>
 
     <div class="card-body">
         <div class="row">
             <div class="col-md-8">
+            
+                <partial name="_RegionDetalle" /> 
 
-                    <partial name="_PaisDetalle" />
-
-                    <div class="form-group row">
-                        <div class="col-sm-2"></div>
-                        <div class="col-sm-8">
-                        <a asp-action="AddRegion" class="btn btn-primary" asp-route-id="@Model?.Id">Agregar Región</a>
-                            <a asp-action="Edit" class="btn btn-warning" asp-route-id="@Model?.Id">Editar País</a>
-                            <a asp-action="Index" class="btn btn-success">Volver</a>
-                        </div>
+                <div class="form-group row">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-8">
+                        <a asp-action="AddComuna" class="btn btn-primary" asp-route-id="@Model?.Id">Agregar Comuna</a>
+                        <a asp-action="EditRegion" class="btn btn-warning" asp-route-id="@Model?.Id">Editar Region</a>
+                        <a asp-action="Details" class="btn btn-success" asp-route-id="@Model?.Pais.Id">Volver</a>
                     </div>
+                </div>
             </div>
         </div>
     </div>
@@ -34,28 +33,26 @@
 <div class="card">
     <div class="card-header">
 
-        <h5 class="card-title">Regiones</h5>
+        <h5 class="card-title">Comunas</h5>
     </div>
     <div class="card-body">
-        <p>
-            @* <a asp-action="Create" class="btn btn-primary">Agregar Región</a> *@
-        </p>
+
 
         <table class="table table-hover table-responsive table-striped" id="MyTable">
             <thead>
                 <tr>
                     <th>
-                        @Html.DisplayNameFor(model => model.Regiones.FirstOrDefault().Nombre)
+                        @Html.DisplayNameFor(model => model.Comunas.FirstOrDefault().Nombre)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Regiones.FirstOrDefault().NumeroDeComunas)
+                        @Html.DisplayNameFor(model => model.Comunas.FirstOrDefault().NumeroDeCiudades)
                     </th>
 
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.Regiones)
+                @foreach (var item in Model.Comunas)
                 {
                     <tr>
                         <td>
@@ -63,13 +60,13 @@
                         </td>
 
                         <td>
-                            @Html.DisplayFor(modelItem => item.NumeroDeComunas)
+                            @Html.DisplayFor(modelItem => item.NumeroDeCiudades)
                         </td>
-          
+
                         <td>
-                            <a class="btn btn-outline-warning btn-sm" asp-action="EditRegion" asp-route-id="@item.Id">Editar</a>
-                            <a class="btn btn-outline-info btn-sm" asp-action="DetailsRegion" asp-route-id="@item.Id">Detalle</a>
-                            <a class="btn btn-outline-danger btn-sm" asp-action="DeleteRegion" asp-route-id="@item.Id">Borrar</a>
+                            <a class="btn btn-outline-warning btn-sm" asp-action="EditComuna" asp-route-id="@item.Id">Editar</a>
+                            <a class="btn btn-outline-info btn-sm" asp-action="DetailsComuna" asp-route-id="@item.Id">Detalle</a>
+                            <a class="btn btn-outline-danger btn-sm" asp-action="DeleteComuna" asp-route-id="@item.Id">Borrar</a>
                         </td>
                     </tr>
                 }
@@ -80,7 +77,7 @@
 </div>
 
 
-@section Scripts {
+ @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
@@ -100,4 +97,6 @@
         });
     </script>
 }
+ 
+
 

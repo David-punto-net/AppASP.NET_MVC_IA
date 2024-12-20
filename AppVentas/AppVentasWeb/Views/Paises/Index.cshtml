@@ -22,6 +22,9 @@
                     <th>
                         @Html.DisplayNameFor(model => model.Nombre)
                     </th>
+                     <th>
+                        @Html.DisplayNameFor(model => model.NumeroDeRegiones)
+                    </th>
                     <th></th>
                 </tr>
             </thead>
@@ -32,6 +35,9 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.Nombre)
                         </td>
+                        <td>
+                             @Html.DisplayFor(modelItem => item.NumeroDeRegiones)
+                         </td>
                         <td>
                             <a class="btn btn-outline-warning btn-sm" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
                             <a class="btn btn-outline-info btn-sm" asp-action="Details" asp-route-id="@item.Id">Detalle</a>

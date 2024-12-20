@@ -1,30 +1,32 @@
-﻿@model AppVentasWeb.Data.Entidades.Pais
+﻿
+@model AppVentasWeb.Models.CiudadViewModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "EditCiudad";
 }
 
 <div class="card">
     <div class="card-header">
-        <h5 class="card-title">Editar País</h5>
+        <h5 class="card-title">Editar Ciudad</h5>
     </div>
     <div class="card-body">
         <div class="row">
             <div class="col-md-8">
 
-                <form asp-action="Edit">
+                <form asp-action="EditCiudad">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                     <input type="hidden" asp-for="Id" />
-                    <input type="hidden" asp-for="Regiones" />
+                    <input type="hidden" asp-for="ComunaId" />
 
-                    <partial name="_Pais" />
+
+                    <partial name="_Ciudad" />
 
                     <div class="form-group row">
                         <div class="col-sm-1"></div>
                         <div class="col-sm-4">
                             <input type="submit" value="Guardar" class="btn btn-success" />
-                            <a asp-action="Index" class="btn btn-primary">Volver</a>
+                            <a asp-action="DetailsComuna" asp-route-id="@Model.ComunaId" class="btn btn-primary">Volver</a>
                         </div>
                     </div>
                 </form>
@@ -36,5 +38,9 @@
 
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
+
+

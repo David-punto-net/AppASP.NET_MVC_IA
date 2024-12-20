@@ -1,28 +1,29 @@
-﻿@model AppVentasWeb.Data.Entidades.Pais
+﻿@model AppVentasWeb.Models.RegionViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "AddRegion";
 }
+
 
 <div class="card">
     <div class="card-header">
-        <h5 class="card-title">Crear País</h5>
+        <h5 class="card-title">Crear Región</h5>
     </div>
     <div class="card-body">
         <div class="row">
             <div class="col-md-8">
 
-                <form asp-action="Create">
+                <form asp-action="AddRegion">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-                    <input type="hidden" asp-for="Regiones" />
-                    <partial name="_Pais" />
+                    <input type="hidden" asp-for="PaisId" />
+      
+                    <partial name="_Region" />
 
                     <div class="form-group row">
                         <div class="col-sm-1"></div>
                         <div class="col-sm-4">
                             <input type="submit" value="Crear" class="btn btn-success" />
-                            <a asp-action="Index" class="btn btn-primary">Volver</a>
+                            <a asp-action="Details" asp-route-id="@Model.PaisId" class="btn btn-primary">Volver</a>
                         </div>
                     </div>
                 </form>
@@ -33,7 +34,11 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
+
+
 
 
