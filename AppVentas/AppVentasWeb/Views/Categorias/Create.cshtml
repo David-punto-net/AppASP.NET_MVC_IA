@@ -11,22 +11,21 @@
     <div class="card-body">
         <div class="row">
             <div class="col-md-8">
+                    <form asp-action="Create">
+                    @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-                <form asp-action="Create">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <partial name="_Categoria" />
 
-                    @*<-- Campos del formulario en visat parcial -->*@
-                    <partial name="_Categoria" />
+                        <div class="form-group row">
+                            <div class="col-sm-1"></div>
+                            <div class="col-sm-4">
+                                <input type="submit" value="Crear" class="btn btn-success" />
+                                <a asp-action="Index" class="btn btn-primary">Volver</a>
 
-                    <div class="form-group row">
-                        <div class="col-sm-1"></div>
-                        <div class="col-sm-4">
-                            <input type="submit" value="Crear" class="btn btn-success" />
-                            <a asp-action="Index" class="btn btn-primary">Volver</a>
+                            </div>
                         </div>
-                    </div>
-                </form>
-
+                    </form>
             </div>
         </div>
     </div>

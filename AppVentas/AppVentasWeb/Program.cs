@@ -1,14 +1,35 @@
 using AppVentasWeb.Data;
+using AppVentasWeb.Data.Entidades;
+using AppVentasWeb.Helper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using AppVentasWeb.Helper;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
+
+
 builder.Services.AddDbContext<DataContex>(o =>
 {
     o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+
+builder.Services.AddIdentity<User, IdentityRole>(cfg =>
+{
+    cfg.User.RequireUniqueEmail = true;
+    cfg.Password.RequireDigit = false;
+    cfg.Password.RequiredUniqueChars = 0;
+    cfg.Password.RequireLowercase = false;
+    cfg.Password.RequireNonAlphanumeric = false;
+    cfg.Password.RequireUppercase = false;
+}).AddEntityFrameworkStores<DataContex>();
+
+builder.Services.AddTransient<SeedDb>();
+builder.Services.AddScoped<IUserHelper, UserHelper>();
+
 
 var app = builder.Build();
 
@@ -17,12 +38,23 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+SeedData(app);
 
+void SeedData(WebApplication app)
+{
+    IServiceScopeFactory? scopedFactory = app.Services.GetService<IServiceScopeFactory>();
+    using (IServiceScope? scope = scopedFactory.CreateScope())
+    {
+        SeedDb? service = scope.ServiceProvider.GetService<SeedDb>();
+        service.SeedAsync().Wait();
+    }
+}
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

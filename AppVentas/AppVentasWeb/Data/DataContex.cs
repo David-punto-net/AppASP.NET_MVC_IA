@@ -1,9 +1,10 @@
 ﻿using AppVentasWeb.Data.Entidades;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace AppVentasWeb.Data
 {
-    public class DataContex : DbContext
+    public class DataContex : IdentityDbContext<User>
     {
         public DataContex(DbContextOptions<DataContex> options) : base(options)
         {
