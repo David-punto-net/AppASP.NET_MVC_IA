@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace AppVentasWeb.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class PaisesController : Controller
     {
         private readonly DataContex _context;
@@ -22,7 +23,7 @@ namespace AppVentasWeb.Controllers
             _context = context;
         }
 
-        [Authorize(Roles = "Admin")]
+      
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -31,7 +32,7 @@ namespace AppVentasWeb.Controllers
                 .ToListAsync());
         }
 
-        [Authorize(Roles = "Admin")]
+      
         [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
@@ -53,7 +54,7 @@ namespace AppVentasWeb.Controllers
             return View(pais);
         }
 
-        [Authorize(Roles = "Admin")]
+   
         public async Task<IActionResult> DetailsRegion(int? id)
         {
             if (id == null)
@@ -75,7 +76,7 @@ namespace AppVentasWeb.Controllers
             return View(region);
         }
 
-        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> DetailsComuna(int? id)
         {
             if (id == null)
@@ -96,7 +97,7 @@ namespace AppVentasWeb.Controllers
             return View(comuna);
         }
 
-        [Authorize(Roles = "Admin")]
+     
         public async Task<IActionResult> DetailsCiudad(int? id)
         {
             if (id == null)
@@ -116,7 +117,7 @@ namespace AppVentasWeb.Controllers
             return View(comuna);
         }
 
-        [Authorize(Roles = "Admin")]
+  
         [HttpGet]
         public IActionResult Create()
         {
@@ -128,7 +129,6 @@ namespace AppVentasWeb.Controllers
             return View(pais);
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Pais pais)
@@ -161,7 +161,7 @@ namespace AppVentasWeb.Controllers
             return View(pais);
         }
 
-        [Authorize(Roles = "Admin")]
+ 
         [HttpGet]
         public async Task<IActionResult> AddRegion(int? id)
         {
@@ -185,7 +185,7 @@ namespace AppVentasWeb.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Admin")]
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddRegion(RegionViewModel model)
@@ -224,7 +224,7 @@ namespace AppVentasWeb.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Admin")]
+       
         [HttpGet]
         public async Task<IActionResult> AddComuna(int? id)
         {
@@ -248,7 +248,7 @@ namespace AppVentasWeb.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Admin")]
+    
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddComuna(ComunaViewModel model)
@@ -287,7 +287,7 @@ namespace AppVentasWeb.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Admin")]
+     
         [HttpGet]
         public async Task<IActionResult> AddCiudad(int? id)
         {
@@ -311,7 +311,7 @@ namespace AppVentasWeb.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Admin")]
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddCiudad(CiudadViewModel model)
@@ -349,7 +349,7 @@ namespace AppVentasWeb.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Admin")]
+      
         [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -369,7 +369,7 @@ namespace AppVentasWeb.Controllers
             return View(pais);
         }
 
-        [Authorize(Roles = "Admin")]
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Pais pais)
@@ -407,7 +407,7 @@ namespace AppVentasWeb.Controllers
             return View(pais);
         }
 
-        [Authorize(Roles = "Admin")]
+       
         [HttpGet]
         public async Task<IActionResult> EditRegion(int? id)
         {
@@ -436,7 +436,7 @@ namespace AppVentasWeb.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Admin")]
+ 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditRegion(int id, RegionViewModel model)
@@ -482,7 +482,7 @@ namespace AppVentasWeb.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Admin")]
+     
         public async Task<IActionResult> EditComuna(int? id)
         {
             if (id == null)
@@ -510,7 +510,7 @@ namespace AppVentasWeb.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Admin")]
+      
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditComuna(int id, ComunaViewModel model)
@@ -556,7 +556,7 @@ namespace AppVentasWeb.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Admin")]
+       
         public async Task<IActionResult> EditCiudad(int? id)
         {
             if (id == null)
@@ -583,7 +583,7 @@ namespace AppVentasWeb.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Admin")]
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditCiudad(int id, CiudadViewModel model)
@@ -628,7 +628,7 @@ namespace AppVentasWeb.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Admin")]
+   
         [HttpGet]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -649,7 +649,7 @@ namespace AppVentasWeb.Controllers
             return View(pais);
         }
 
-        [Authorize(Roles = "Admin")]
+      
         [HttpGet]
         public async Task<IActionResult> DeleteRegion(int? id)
         {
@@ -671,7 +671,7 @@ namespace AppVentasWeb.Controllers
             return View(region);
         }
 
-        [Authorize(Roles = "Admin")]
+       
         public async Task<IActionResult> DeleteComuna(int? id)
         {
             if (id == null)
@@ -691,7 +691,7 @@ namespace AppVentasWeb.Controllers
             return View(comuna);
         }
 
-        [Authorize(Roles = "Admin")]
+       
         public async Task<IActionResult> DeleteCiudad(int? id)
         {
             if (id == null)
@@ -711,7 +711,7 @@ namespace AppVentasWeb.Controllers
             return View(ciudad);
         }
 
-        [Authorize(Roles = "Admin")]
+       
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -726,7 +726,7 @@ namespace AppVentasWeb.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [Authorize(Roles = "Admin")]
+       
         [HttpPost, ActionName("DeleteRegion")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteRegionConfirmed(int id)
@@ -745,7 +745,7 @@ namespace AppVentasWeb.Controllers
             return RedirectToAction(nameof(Details), new { Id = region.Pais.Id });
         }
 
-        [Authorize(Roles = "Admin")]
+        
         [HttpPost, ActionName("DeleteComuna")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteComunaConfirmed(int id)
@@ -764,7 +764,6 @@ namespace AppVentasWeb.Controllers
             return RedirectToAction(nameof(DetailsRegion), new { Id = comuna.Region.Id });
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("DeleteCiudad")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteCiudadConfirmed(int id)

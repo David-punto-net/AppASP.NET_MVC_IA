@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace AppVentasWeb.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class CategoriasController : Controller
     {
         private readonly DataContex _context;
@@ -21,14 +22,14 @@ namespace AppVentasWeb.Controllers
             _context = context;
         }
 
-        [Authorize(Roles = "Admin")]
+   
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Categorias.ToListAsync());
         }
 
-        [Authorize(Roles = "Admin")]
+       
         [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
@@ -47,14 +48,13 @@ namespace AppVentasWeb.Controllers
             return View(categoria);
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
 
-        [Authorize(Roles = "Admin")]
+      
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Categoria categoria)
@@ -87,7 +87,7 @@ namespace AppVentasWeb.Controllers
             return View(categoria);
         }
 
-        [Authorize(Roles = "Admin")]
+     
         [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -104,7 +104,7 @@ namespace AppVentasWeb.Controllers
             return View(categoria);
         }
 
-        [Authorize(Roles = "Admin")]
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Categoria categoria)
@@ -142,7 +142,7 @@ namespace AppVentasWeb.Controllers
             return View(categoria);
         }
 
-        [Authorize(Roles = "Admin")]
+     
         [HttpGet]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -161,7 +161,7 @@ namespace AppVentasWeb.Controllers
             return View(categoria);
         }
 
-        [Authorize(Roles = "Admin")]
+    
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
