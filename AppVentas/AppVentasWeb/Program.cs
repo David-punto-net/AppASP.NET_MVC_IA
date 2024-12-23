@@ -3,19 +3,15 @@ using AppVentasWeb.Data.Entidades;
 using AppVentasWeb.Helper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using AppVentasWeb.Helper;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
-
-
 builder.Services.AddDbContext<DataContex>(o =>
 {
     o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-
 
 builder.Services.AddIdentity<User, IdentityRole>(cfg =>
 {
@@ -35,7 +31,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddTransient<SeedDb>();
 builder.Services.AddScoped<IUserHelper, UserHelper>();
-
+builder.Services.AddScoped<ICombosHelper, CombosHelper>();
 
 
 var app = builder.Build();
