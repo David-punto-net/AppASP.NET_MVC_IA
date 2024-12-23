@@ -17,7 +17,6 @@
                 <div class="form-group row">
                     <div class="col-sm-2"></div>
                     <div class="col-sm-8">
-                        <a asp-action="AddCiudad" class="btn btn-primary" asp-route-id="@Model?.Id">Agregar Ciudad</a>
                         <a asp-action="EditComuna" class="btn btn-warning" asp-route-id="@Model?.Id">Editar Comuna</a>
                         <a asp-action="DetailsRegion" class="btn btn-success" asp-route-id="@Model?.Region.Id">Volver</a>
                     </div>
@@ -36,7 +35,9 @@
         <h5 class="card-title">Ciudad</h5>
     </div>
     <div class="card-body">
-
+        <p>
+            <a asp-action="AddCiudad" class="btn btn-primary" asp-route-id="@Model?.Id">Agregar Ciudad</a>
+        </p>
 
         <table class="table table-hover table-responsive table-striped" id="MyTable">
             <thead>
