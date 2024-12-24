@@ -9,9 +9,15 @@ namespace AppVentasWeb.Helper
 
         public BlobHelper(IConfiguration configuration)
         {
-            //string keys = configuration["Blob:ConnectionString"];
-            //CloudStorageAccount storageAccount = CloudStorageAccount.Parse(keys);
-            //_blobClient = storageAccount.CreateCloudBlobClient();
+            try
+            {
+                string keys = configuration["Blob:ConnectionString"];
+                CloudStorageAccount storageAccount = CloudStorageAccount.Parse(keys);
+                _blobClient = storageAccount.CreateCloudBlobClient();
+            }
+            catch 
+            { 
+            }
         }
 
         public async Task DeleteBlobAsync(Guid id, string containerName)

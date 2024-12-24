@@ -9,8 +9,13 @@ namespace AppVentasWeb.Helper
 
         public BlobHelper_Nuevo(IConfiguration configuration)
         {
-            string keys = configuration["Blob:ConnectionString"];
-            _blobServiceClient = new BlobServiceClient(keys);
+            try
+            {
+                string keys = configuration["Blob:ConnectionString"];
+                _blobServiceClient = new BlobServiceClient(keys);
+            }
+            catch { }
+      
         }
 
         public async Task DeleteBlobAsync(Guid id, string containerName)
