@@ -16,7 +16,7 @@ namespace AppVentasWeb.Data.Entidades
 
         public ICollection<Region> Regiones { get; set; }
 
-        [Display(Name = "Regiones")]
+        [Display(Name = "N° Regiones")]
         public int NumeroDeRegiones => Regiones == null ? 0 : Regiones.Count;
     }
 }

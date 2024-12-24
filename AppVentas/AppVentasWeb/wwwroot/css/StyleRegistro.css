@@ -11,7 +11,7 @@ body {
 }
 */
 /* Contenedor principal del login */
-.login-wrapper {
+.register-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -20,15 +20,16 @@ body {
 }
 
 /* Contenedor del formulario */
-.login-container {
+.register-container {
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 15px 15px rgba(0, 0, 0, 0.1);
     padding: 20px;
     width: 100%;
-    max-width: 460px;
+    max-width: 800px;
     /*text-align: center;*/
 }
+
 
 /* Título */
 h2 {

@@ -2,15 +2,14 @@
 @{
     ViewData["Title"] = "Register";
 }
-<link rel="stylesheet" href="~/css/StyleLogin.css" />
-<div class="card">
-    <div class="card-header">
-        <h4 class="card-title">Registrar</h4>
-    </div>
-    <div class="card-body">
-        <h5 class="card-title">Usuario</h5>
-        <div class="row">
+<link rel="stylesheet" href="~/css/StyleRegistro.css" />
+
+
+<div class="register-wrapper">
+    <div class="register-container">
+  
             <div class="col-md-12 mt-3">
+                <h3>Registrar Usuario</h3>
                 <form asp-action="Register" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="Id" />
@@ -49,7 +48,6 @@
                     </div>
                 </form>
             </div>
-        </div>
     </div>
 </div>
 

@@ -17,7 +17,7 @@ namespace AppVentasWeb.Data.Entidades
         public Pais Pais { get; set; }
         public ICollection<Comuna> Comunas { get; set; }
 
-        [Display(Name = "Comunas")]
+        [Display(Name = "N° Comunas")]
         public int NumeroDeComunas => Comunas == null ? 0 : Comunas.Count;
     }
 }
