@@ -5,6 +5,7 @@ using AppVentasWeb.Helper;
 using AppVentasWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing;
 
 namespace AppVentasWeb.Controllers
 {
@@ -90,6 +91,10 @@ namespace AppVentasWeb.Controllers
                 if (user == null)
                 {
                     ModelState.AddModelError(string.Empty, "Este correo ya está siendo usado.");
+                    model.Paises = await _combosHelper.GetComboPaisesAsync();
+                    model.Regiones = await _combosHelper.GetComboRegionesAsync(model.PaisId);
+                    model.Comunas = await _combosHelper.GetComboComunasAsync(model.RegionId);
+                    model.Ciudades = await _combosHelper.GetComboCiudadesAsync(model.ComunaId);
                     return View(model);
                 }
                 LoginViewModel loginViewModel = new()
@@ -104,12 +109,16 @@ namespace AppVentasWeb.Controllers
                     return RedirectToAction("Index", "Home");
                 }
             }
+
+            model.Paises = await _combosHelper.GetComboPaisesAsync();
+            model.Regiones = await _combosHelper.GetComboRegionesAsync(model.PaisId);
+            model.Comunas = await _combosHelper.GetComboComunasAsync(model.RegionId);
+            model.Ciudades = await _combosHelper.GetComboCiudadesAsync(model.ComunaId);
             return View(model);
         }
 
         public async Task<JsonResult> GetRegionesAsync(int paisId)
         {
-
             var pais = await _context.Paises
             .Include(c => c.Regiones)
             .FirstOrDefaultAsync(c => c.Id == paisId);
@@ -123,7 +132,6 @@ namespace AppVentasWeb.Controllers
 
         public async Task<JsonResult> GetComunasAsync(int regionId)
         {
-
             var regiones = await _context.Regiones
                           .Include(c => c.Comunas)
                            .FirstOrDefaultAsync(c => c.Id == regionId);
@@ -137,7 +145,6 @@ namespace AppVentasWeb.Controllers
 
         public async Task<JsonResult> GetCiudadesAsync(int comunaId)
         {
-
             var comuna = await _context.Comunas
                      .Include(c => c.Ciudades)
                      .FirstOrDefaultAsync(m => m.Id == comunaId);

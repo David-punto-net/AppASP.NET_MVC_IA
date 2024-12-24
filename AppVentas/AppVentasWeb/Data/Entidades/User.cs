@@ -6,7 +6,7 @@ namespace AppVentasWeb.Data.Entidades
 {
     public class User : IdentityUser
     {
-        [Display(Name = "Documento")]
+        [Display(Name = "Rut")]
         [MaxLength(20, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public string Rut { get; set; }
@@ -34,7 +34,7 @@ namespace AppVentasWeb.Data.Entidades
         ? $"https://localhost:44343/images/noimage.png"
         : $"https://shoppingzulu.blob.core.windows.net/users/{ImageId}";
 
-        [Display(Name = "Tipo de usuario")]
+        [Display(Name = "Tipo")]
         public UserType UserType { get; set; }
 
         [Display(Name = "Ciudad")]
