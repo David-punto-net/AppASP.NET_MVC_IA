@@ -8,7 +8,7 @@ namespace AppVentasWeb.Helper
 
         Task<IEnumerable<SelectListItem>> GetComboPaisesAsync();
 
-        Task<IEnumerable<SelectListItem>> GetComboReginesAsync(int paisId);
+        Task<IEnumerable<SelectListItem>> GetComboRegionesAsync(int paisId);
 
         Task<IEnumerable<SelectListItem>> GetComboComunasAsync(int regionesId);
 

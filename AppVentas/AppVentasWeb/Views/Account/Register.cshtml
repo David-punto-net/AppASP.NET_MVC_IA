@@ -1,0 +1,136 @@
+﻿@model AppVentasWeb.Models.AddUserViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+<link rel="stylesheet" href="~/css/StyleLogin.css" />
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">Registrar</h4>
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">Usuario</h5>
+        <div class="row">
+            <div class="col-md-12 mt-3">
+                <form asp-action="Register" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="UserType" />
+                    <input type="hidden" asp-for="Paises" />
+                    <input type="hidden" asp-for="Regiones" />
+                    <input type="hidden" asp-for="Comunas" />
+                    <input type="hidden" asp-for="Ciudades" />
+
+                    <div class="form-group">
+                        <label asp-for="Username" class="control-label"></label>
+                        <input asp-for="Username" class="form-control" />
+                        <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Password" class="control-label"></label>
+                                <input asp-for="Password" class="form-control" />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="PasswordConfirm" class="control-label"></label>
+                                <input asp-for="PasswordConfirm" class="form-control" />
+                                <span asp-validation-for="PasswordConfirm" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <partial name="_User" />
+
+                    <div class="form-group mt-2">
+                        <input type="submit" value="Registrar" class="btn btn-outline-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#PaisId").change(function () {
+                $("#RegionId").empty();
+                $("#RegionId").append('<option value="0">Selecciona una región...</option>');
+                $("#comunaId").empty();
+                $("#comunaId").append('<option value="0">Selecciona una comuna...</option>');
+                $("#CiudadId").empty();
+                $("#CiudadId").append('<option value="0">Selecciona una ciudad...</option>');
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetRegiones")',
+                    dataType: 'json',
+                    data: { paisId: $("#PaisId").val() },
+                    success: function (regiones) {
+                        $.each(regiones, function (i, region) {
+                            $("#RegionId").append('<option value="' + region.id + '">' + region.nombre + '</option>');
+                        });
+                    },
+                    error: function (ex) {
+                        alert('Failed to retrieve regiones.' + ex);
+                    }
+                });
+                return false;
+            })
+
+
+            $("#RegionId").change(function () {
+                $("#ComunaId").empty();
+                $("#ComunaId").append('<option value="0">Selecciona una comuna...</option>');
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetComunas")',
+                    dataType: 'json',
+                    data: { regionId: $("#RegionId").val() },
+                    success: function (comunas) {
+                        $.each(comunas, function (i, comuna) {
+                            $("#ComunaId").append('<option value="' + comuna.id + '">' + comuna.nombre + '</option>');
+                        });
+                    },
+                    error: function (ex) {
+                        alert('Failed to retrieve cities.' + ex);
+                    }
+                });
+                return false;
+            })
+
+
+            $("#ComunaId").change(function () {
+                $("#CiudadId").empty();
+                $("#CiudadId").append('<option value="0">Selecciona una ciudad...</option>');
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetCiudades")',
+                    dataType: 'json',
+                    data: { comunaId: $("#ComunaId").val() },
+                    success: function (ciudades) {
+                        $.each(ciudades, function (i, ciudad) {
+                          
+                            $("#CiudadId").append('<option value="'
+                                + ciudad.id + '">'
+                                + ciudad.nombre + '</option>');
+                        });
+                    },
+                    error: function (ex) {
+                        alert('Failed to retrieve Ciudades.' + ex);
+                    }
+                });
+                return false;
+            })
+
+
+        });
+    </script> 
+    
+}

@@ -27,7 +27,7 @@ namespace AppVentasWeb.Helper
 
             list.Insert(0, new SelectListItem
             {
-                Text = "[Seleccione una categoría...]",
+                Text = "Seleccione una categoría...",
                 Value = "0"
             });
 
@@ -48,7 +48,7 @@ namespace AppVentasWeb.Helper
 
             list.Insert(0, new SelectListItem
             {
-                Text = "[Seleccione una ciudad...]",
+                Text = "Seleccione una ciudad...",
                 Value = "0"
             });
 
@@ -69,7 +69,7 @@ namespace AppVentasWeb.Helper
 
             list.Insert(0, new SelectListItem
             {
-                Text = "[Seleccione una comuna...]",
+                Text = "Seleccione una comuna...",
                 Value = "0"
             });
 
@@ -88,14 +88,14 @@ namespace AppVentasWeb.Helper
 
             list.Insert(0, new SelectListItem
             {
-                Text = "[Seleccione un país...]",
+                Text = "Seleccione un país...",
                 Value = "0"
             });
 
             return list;
         }
 
-        public async Task<IEnumerable<SelectListItem>> GetComboReginesAsync(int paisId)
+        public async Task<IEnumerable<SelectListItem>> GetComboRegionesAsync(int paisId)
         {
             List<SelectListItem> list = await _context.Regiones
            .Where(x => x.Pais.Id == paisId)
@@ -109,7 +109,7 @@ namespace AppVentasWeb.Helper
 
             list.Insert(0, new SelectListItem
             {
-                Text = "[Seleccione una región...]",
+                Text = "Seleccione una región...",
                 Value = "0"
             });
 

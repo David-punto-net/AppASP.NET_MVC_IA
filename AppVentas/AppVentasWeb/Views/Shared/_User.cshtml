@@ -1,0 +1,59 @@
+﻿@model AppVentasWeb.Models.EditUserViewModel
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label asp-for="Rut" class="control-label"></label>
+            <input asp-for="Rut" class="form-control" />
+            <span asp-validation-for="Rut" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Nombres" class="control-label"></label>
+            <input asp-for="Nombres" class="form-control" />
+            <span asp-validation-for="Nombres" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Apellidos" class="control-label"></label>
+            <input asp-for="Apellidos" class="form-control" />
+            <span asp-validation-for="Apellidos" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Direccion" class="control-label"></label>
+            <input asp-for="Direccion" class="form-control" />
+            <span asp-validation-for="Direccion" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="PhoneNumber" class="control-label"></label>
+            <input asp-for="PhoneNumber" class="form-control" />
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="form-group">
+            <label asp-for="ImageFile" class="control-label"></label>
+            <input asp-for="ImageFile" class="form-control" type="file" />
+            <span asp-validation-for="ImageFile" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="PaisId" class="control-label"></label>
+            <select asp-for="PaisId" asp-items="Model.Paises" class="form-control"></select>
+            <span asp-validation-for="PaisId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="RegionId" class="control-label"></label>
+            <select asp-for="RegionId" asp-items="Model.Regiones" class="form-control"></select>
+            <span asp-validation-for="RegionId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="ComunaId" class="control-label"></label>
+            <select asp-for="ComunaId" asp-items="Model.Comunas" class="form-control"></select>
+            <span asp-validation-for="ComunaId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="CiudadId" class="control-label"></label>
+            <select asp-for="CiudadId" asp-items="Model.Ciudades" class="form-control"></select>
+            <span asp-validation-for="CiudadId" class="text-danger"></span>
+        </div>
+    </div>
+</div>

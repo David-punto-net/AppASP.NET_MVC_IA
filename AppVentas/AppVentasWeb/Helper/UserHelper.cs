@@ -26,6 +26,33 @@ namespace AppVentasWeb.Helper
             return await _userManager.CreateAsync(user, password);
         }
 
+        public async Task<User> AddUserAsync(AddUserViewModel model)
+        {
+            User user = new User
+            {
+                Direccion = model.Direccion,
+                Rut = model.Rut,
+                Email = model.Username,
+                Nombres = model.Nombres,
+                Apellidos = model.Apellidos,
+                ImageId = model.ImageId,
+                PhoneNumber = model.PhoneNumber,
+                Ciudad = await _context.Ciudades.FindAsync(model.CiudadId),
+                UserName = model.Username,
+                UserType = model.UserType
+            };
+
+            IdentityResult result = await _userManager.CreateAsync(user, model.Password);
+            if (result != IdentityResult.Success)
+            {
+                return null;
+            }
+
+            User newUser = await GetUserAsync(model.Username);
+            await AddUserToRoleAsync(newUser, user.UserType.ToString());
+            return newUser;
+        }
+
         public async Task AddUserToRoleAsync(User user, string roleName)
         {
             await _userManager.AddToRoleAsync(user, roleName);
@@ -69,5 +96,6 @@ namespace AppVentasWeb.Helper
         {
             await _signInManager.SignOutAsync();
         }
+
     }
 }

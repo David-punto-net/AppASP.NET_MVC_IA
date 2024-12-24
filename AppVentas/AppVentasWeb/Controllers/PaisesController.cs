@@ -659,7 +659,6 @@ namespace AppVentasWeb.Controllers
             }
 
             var region = await _context.Regiones
-                     //.Include(c => c.Comunas)
                      .Include(c => c.Pais)
                      .FirstOrDefaultAsync(m => m.Id == id);
 
