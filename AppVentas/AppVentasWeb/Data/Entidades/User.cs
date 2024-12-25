@@ -31,8 +31,8 @@ namespace AppVentasWeb.Data.Entidades
 
         [Display(Name = "Foto")]
         public string ImageFullPath => ImageId == Guid.Empty
-        ? $"https://localhost:44343/images/noimage.png"
-        : $"https://shoppingzulu.blob.core.windows.net/users/{ImageId}";
+        ? $"https://localhost:44338/images/noimage.png"
+        : $"https://appventa.blob.core.windows.net/users/{ImageId}"; 
 
         [Display(Name = "Tipo")]
         public UserType UserType { get; set; }

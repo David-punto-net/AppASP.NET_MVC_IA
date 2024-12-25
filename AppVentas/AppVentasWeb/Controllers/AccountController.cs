@@ -2,7 +2,10 @@
 using AppVentasWeb.Data.Entidades;
 using AppVentasWeb.Enum;
 using AppVentasWeb.Helper;
+using AppVentasWeb.Migrations;
 using AppVentasWeb.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Drawing;
@@ -61,6 +64,13 @@ namespace AppVentasWeb.Controllers
 
         public async Task<IActionResult> Register()
         {
+            var userType = UserType.User;
+
+            if (User.IsInRole(UserType.Admin.ToString()))
+            {
+                userType = UserType.Admin;
+            }
+
             AddUserViewModel model = new()
             {
                 Id = Guid.Empty.ToString(),
@@ -68,7 +78,8 @@ namespace AppVentasWeb.Controllers
                 Regiones = await _combosHelper.GetComboRegionesAsync(0),
                 Comunas = await _combosHelper.GetComboComunasAsync(0),
                 Ciudades = await _combosHelper.GetComboCiudadesAsync(0),
-                UserType = UserType.User,
+
+                UserType = userType //UserType.User
             };
             return View(model);
         }

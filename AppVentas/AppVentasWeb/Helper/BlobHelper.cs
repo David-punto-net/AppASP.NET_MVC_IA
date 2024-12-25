@@ -45,12 +45,12 @@ namespace AppVentasWeb.Helper
         {
             try
             {
-                //Guid name = Guid.NewGuid();
-                //CloudBlobContainer container = _blobClient.GetContainerReference(containerName);
-                //CloudBlockBlob blockBlob = container.GetBlockBlobReference($"{name}");
-                //await blockBlob.UploadFromStreamAsync(stream);
-                //return name;
-                return Guid.Empty;
+                Guid name = Guid.NewGuid();
+                CloudBlobContainer container = _blobClient.GetContainerReference(containerName);
+                CloudBlockBlob blockBlob = container.GetBlockBlobReference($"{name}");
+                await blockBlob.UploadFromStreamAsync(stream);
+                return name;
+                //return Guid.Empty;
             }
             catch (Exception ex) {
                 return Guid.Empty;

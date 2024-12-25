@@ -38,8 +38,8 @@ namespace AppVentasWeb.Models
         //TODO: Pending to put the correct paths
         [Display(Name = "Foto")]
         public string ImageFullPath => ImageId == Guid.Empty
-        ? $"https://localhost:7057/images/noimage.png"
-        : $"https://shoppingzulu.blob.core.windows.net/users/{ImageId}";
+        ? $"https://localhost:44338/images/noimage.png"
+        : $"https://appventa.blob.core.windows.net/users/{ImageId}";
 
         [Display(Name = "Image")]
         public IFormFile ImageFile { get; set; }
