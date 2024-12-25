@@ -15,10 +15,11 @@
             <div class="col-md-8">
                 <p>¿Esta seguro de querer borrar?</p>
 
-                @*<-- Campos del formulario en visat parcial -->*@
+          
                 <partial name="_PaisDetalle" />
 
                 <form asp-action="Delete">
+                    @Html.AntiForgeryToken()
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                     <div class="form-group row">

@@ -13,6 +13,7 @@
             <div class="col-md-8">
 
                 <form asp-action="EditRegion">
+                    @Html.AntiForgeryToken()
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                     <input type="hidden" asp-for="Id" /> 

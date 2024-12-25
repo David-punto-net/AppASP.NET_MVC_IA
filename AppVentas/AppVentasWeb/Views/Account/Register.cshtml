@@ -9,6 +9,7 @@
     <div class="register-container">
   
             <div class="col-md-12 mt-3">
+
             @if (User.IsInRole("Admin"))
             {
                 <h3>Registrar Administrador</h3>
@@ -17,9 +18,9 @@
             {
                 <h3>Registrar Usuario</h3>
             }
-                @* <h3>Registrar Usuario</h3> *@
 
                 <form asp-action="Register" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="Id" />
                     <input type="hidden" asp-for="UserType" />

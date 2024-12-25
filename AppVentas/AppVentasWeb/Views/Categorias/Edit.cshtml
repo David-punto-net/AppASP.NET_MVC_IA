@@ -13,6 +13,7 @@
             <div class="col-md-8">
 
                 <form asp-action="Edit">
+                    @Html.AntiForgeryToken()
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                     @*<-- Campos del formulario en visat parcial -->*@
