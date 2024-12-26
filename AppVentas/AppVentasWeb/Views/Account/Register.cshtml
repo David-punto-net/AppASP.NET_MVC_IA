@@ -12,11 +12,11 @@
 
             @if (User.IsInRole("Admin"))
             {
-                <h3>Registrar Administrador</h3>
+                <h3><i class="fa-solid fa-user"></i> Registrar Administrador</h3>
             }
             else
             {
-                <h3>Registrar Usuario</h3>
+                <h3><i class="fa-solid fa-user"></i> Registrar Usuario</h3>
             }
 
             @if (!string.IsNullOrEmpty(ViewBag.Message))
