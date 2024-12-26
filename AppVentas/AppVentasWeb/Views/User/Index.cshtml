@@ -43,9 +43,11 @@
                     <th class="text-sm-start">
                         @Html.DisplayNameFor(model => model.Direccion)
                     </th>
-           
-                      <th class="text-sm-start" >
+                    <th class="text-sm-start" >
                         @Html.DisplayNameFor(model => model.UserType)
+                    </th>
+                    <th class="text-sm-start" >
+                        Habilitado
                     </th>
                     <th class="text-sm-center">
                         @Html.DisplayNameFor(model => model.ImageFullPath)
@@ -81,9 +83,11 @@
                         <td class="text-sm-start">
                             @Html.DisplayFor(modelItem => item.Direccion)
                         </td>
-      
-                           <td class="text-sm-start">
+                        <td class="text-sm-start">
                             @Html.DisplayFor(modelItem => item.UserType)
+                        </td>
+                         <td class="text-sm-center">
+                            @Html.DisplayFor(modelItem => item.EmailConfirmed)
                         </td>
                         <td class="text-sm-center">
                             <img src="@item.ImageFullPath" style="width:50px; height:50px; border-radius:50px" />

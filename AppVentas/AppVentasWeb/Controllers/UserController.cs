@@ -13,13 +13,15 @@ namespace AppVentasWeb.Controllers
         private readonly IUserHelper _userHelper;
         private readonly ICombosHelper _combosHelper;
         private readonly IBlobHelper _blobHelper;
+        private readonly IMailHelper _mailHelper;
 
-        public UserController(DataContex context, IUserHelper userHelper, ICombosHelper combosHelper, IBlobHelper blobHelper)
+        public UserController(DataContex context, IUserHelper userHelper, ICombosHelper combosHelper, IBlobHelper blobHelper, IMailHelper mailHelper)
         {
             _context = context;
             _userHelper = userHelper;
             _combosHelper = combosHelper;
             _blobHelper = blobHelper;
+            _mailHelper = mailHelper;
         }
 
         public async Task<IActionResult> Index()
