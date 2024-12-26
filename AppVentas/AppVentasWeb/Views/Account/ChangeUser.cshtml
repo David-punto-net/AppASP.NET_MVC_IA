@@ -1,0 +1,134 @@
+﻿@model AppVentasWeb.Models.EditUserViewModel
+@{
+    ViewData["Title"] = "ChangeUser";
+}
+<link rel="stylesheet" href="~/css/StyleRegistro.css" />
+
+
+<div class="register-wrapper">
+    <div class="register-container">
+
+        <h3>Editar Usuario</h3>
+       
+        @if (ViewBag.SuccessMessage == "OK")
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Contraseña!</strong> Cambiada correctamente!
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <div class="row">
+                <div class="col-md-9 mt-3">
+
+                    <form asp-action="ChangeUser" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="ImageId" />
+                        <input type="hidden" asp-for="Paises" />
+                        <input type="hidden" asp-for="Regiones" />
+                        <input type="hidden" asp-for="Comunas" />
+                        <input type="hidden" asp-for="Ciudades" />
+
+                        <partial name="_User" />
+
+                        <div class="form-group mt-2">
+                            <input type="submit" value="Guardar" class="btn btn-outline-primary" />
+                            <a asp-action="ChangePassword" class="btn btn-outline-secondary">Cambiar Contraseña</a>
+                        </div>
+                    </form>
+                </div>
+
+            <div class="col-md-3 mt-5">
+                    <img src="@Model.ImageFullPath" style="width:150px;height:150px;border-radius:50%" />
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#PaisId").change(function () {
+                $("#RegionId").empty();
+                $("#RegionId").append('<option value="0">Selecciona una región...</option>');
+                $("#comunaId").empty();
+                $("#comunaId").append('<option value="0">Selecciona una comuna...</option>');
+                $("#CiudadId").empty();
+                $("#CiudadId").append('<option value="0">Selecciona una ciudad...</option>');
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetRegiones")',
+                    dataType: 'json',
+                    data: { paisId: $("#PaisId").val() },
+                    success: function (regiones) {
+                        $.each(regiones, function (i, region) {
+                            $("#RegionId").append('<option value="' + region.id + '">' + region.nombre + '</option>');
+                        });
+                    },
+                    error: function (ex) {
+                        alert('Failed to retrieve regiones.' + ex);
+                    }
+                });
+                return false;
+            })
+
+
+            $("#RegionId").change(function () {
+                $("#ComunaId").empty();
+                $("#ComunaId").append('<option value="0">Selecciona una comuna...</option>');
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetComunas")',
+                    dataType: 'json',
+                    data: { regionId: $("#RegionId").val() },
+                    success: function (comunas) {
+                        $.each(comunas, function (i, comuna) {
+                            $("#ComunaId").append('<option value="' + comuna.id + '">' + comuna.nombre + '</option>');
+                        });
+                    },
+                    error: function (ex) {
+                        alert('Failed to retrieve cities.' + ex);
+                    }
+                });
+                return false;
+            })
+
+
+            $("#ComunaId").change(function () {
+                $("#CiudadId").empty();
+                $("#CiudadId").append('<option value="0">Selecciona una ciudad...</option>');
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetCiudades")',
+                    dataType: 'json',
+                    data: { comunaId: $("#ComunaId").val() },
+                    success: function (ciudades) {
+                        $.each(ciudades, function (i, ciudad) {
+
+                            $("#CiudadId").append('<option value="'
+                                + ciudad.id + '">'
+                                + ciudad.nombre + '</option>');
+                        });
+                    },
+                    error: function (ex) {
+                        alert('Failed to retrieve Ciudades.' + ex);
+                    }
+                });
+                return false;
+            })
+
+
+        });
+    </script>
+
+}

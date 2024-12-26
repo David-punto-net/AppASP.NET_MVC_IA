@@ -66,7 +66,7 @@ namespace AppVentasWeb.Controllers
         {
             var userType = UserType.User;
 
-            if (User.IsInRole(UserType.Admin.ToString()))
+            if (User.IsInRole(UserType.Admin.ToString()) && User.Identity.IsAuthenticated)
             {
                 userType = UserType.Admin;
             }
@@ -117,7 +117,14 @@ namespace AppVentasWeb.Controllers
                 var result2 = await _userHelper.LoginAsync(loginViewModel);
                 if (result2.Succeeded)
                 {
-                    return RedirectToAction("Index", "Home");
+                    if (User.IsInRole(UserType.Admin.ToString()) && User.Identity.IsAuthenticated)
+                    {
+                        return RedirectToAction("Index", "User");
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
                 }
             }
 
@@ -165,6 +172,116 @@ namespace AppVentasWeb.Controllers
                 return null;
             }
             return Json(comuna.Ciudades.OrderBy(d => d.Nombre));
+        }
+
+        public async Task<IActionResult> ChangeUser()
+        {
+            User user = await _userHelper.GetUserAsync(User.Identity.Name);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (TempData.ContainsKey("SuccessMessage"))
+            {
+                ViewBag.SuccessMessage = TempData["SuccessMessage"];
+            }
+
+            EditUserViewModel model = new()
+            {
+                Direccion = user.Direccion,
+                Nombres = user.Nombres,
+                Apellidos = user.Apellidos,
+                PhoneNumber = user.PhoneNumber,
+                ImageId = user.ImageId,
+
+                Ciudades = await _combosHelper.GetComboCiudadesAsync(user.Ciudad.Comuna.Id),
+                CiudadId = user.Ciudad.Id,
+
+                Comunas = await _combosHelper.GetComboComunasAsync(user.Ciudad.Comuna.Region.Id),
+                ComunaId = user.Ciudad.Comuna.Id,
+
+                Regiones = await _combosHelper.GetComboRegionesAsync(user.Ciudad.Comuna.Region.Pais.Id),
+                RegionId = user.Ciudad.Comuna.Region.Id,
+
+                Paises = await _combosHelper.GetComboPaisesAsync(),
+                PaisId = user.Ciudad.Comuna.Region.Pais.Id,
+
+                Id = user.Id,
+                Rut = user.Rut
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeUser(EditUserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+         
+                Guid imageId = model.ImageId;
+                if (model.ImageFile != null)
+                {
+                    imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
+                }
+                User user = await _userHelper.GetUserAsync(User.Identity.Name);
+                user.Nombres = model.Nombres;
+                user.Apellidos = model.Apellidos;
+                user.Direccion = model.Direccion;
+                user.PhoneNumber = model.PhoneNumber;
+                user.ImageId = imageId;
+                user.Ciudad = await _context.Ciudades.FindAsync(model.CiudadId);
+                user.Rut = model.Rut;
+
+                await _userHelper.UpdateUserAsync(user);
+                return RedirectToAction("Index", "Home");
+            }
+
+            model.Paises = await _combosHelper.GetComboPaisesAsync();
+            model.Regiones = await _combosHelper.GetComboRegionesAsync(model.PaisId);
+            model.Comunas = await _combosHelper.GetComboComunasAsync(model.RegionId);
+            model.Ciudades = await _combosHelper.GetComboCiudadesAsync(model.ComunaId);
+            return View(model);
+        }
+
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if(model.OldPassword == model.NewPassword)
+                {
+                    ModelState.AddModelError(string.Empty, "Debes ingresar una contraseña diferente");
+                    return View(model);
+                }
+
+                User? user = await _userHelper.GetUserAsync(User.Identity.Name);
+                if (user != null)
+                {
+                    IdentityResult? result = await _userHelper.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+                    if (result.Succeeded)
+                    {
+                        TempData["SuccessMessage"] = "OK";
+                        return RedirectToAction("ChangeUser");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, result.Errors.FirstOrDefault().Description);
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Usuario no encontrado.");
+                }
+            }
+            return View(model);
         }
     }
 }

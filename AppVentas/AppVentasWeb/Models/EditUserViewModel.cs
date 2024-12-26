@@ -42,7 +42,7 @@ namespace AppVentasWeb.Models
         : $"https://appventa.blob.core.windows.net/users/{ImageId}";
 
         [Display(Name = "Image")]
-        public IFormFile ImageFile { get; set; }
+        public IFormFile? ImageFile { get; set; }
 
 
         [Display(Name = "País")]

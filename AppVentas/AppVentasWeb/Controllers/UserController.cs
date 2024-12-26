@@ -1,4 +1,5 @@
 ﻿using AppVentasWeb.Data;
+using AppVentasWeb.Helper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,10 +10,16 @@ namespace AppVentasWeb.Controllers
     public class UserController : Controller
     {
         private readonly DataContex _context;
+        private readonly IUserHelper _userHelper;
+        private readonly ICombosHelper _combosHelper;
+        private readonly IBlobHelper _blobHelper;
 
-        public UserController(DataContex context)
+        public UserController(DataContex context, IUserHelper userHelper, ICombosHelper combosHelper, IBlobHelper blobHelper)
         {
             _context = context;
+            _userHelper = userHelper;
+            _combosHelper = combosHelper;
+            _blobHelper = blobHelper;
         }
 
         public async Task<IActionResult> Index()
