@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Drawing;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace AppVentasWeb.Controllers
 {
@@ -41,12 +42,20 @@ namespace AppVentasWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                Microsoft.AspNetCore.Identity.SignInResult result = await _userHelper.LoginAsync(model);
+                SignInResult result = await _userHelper.LoginAsync(model);
                 if (result.Succeeded)
                 {
                     return RedirectToAction("Index", "Home");
                 }
-                ModelState.AddModelError(string.Empty, "Email o contraseña incorrectos.");
+
+                if (result.IsLockedOut)
+                {
+                    ModelState.AddModelError(string.Empty, "Ha superado el máximo número de intentos, su cuenta está bloqueada, intente de nuevo en 5 minutos.");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Email o contraseña incorrectos.");
+                }
             }
             return View(model);
         }
