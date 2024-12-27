@@ -1,0 +1,31 @@
+﻿
+@model AppVentasWeb.Models.EditProductoViewModel
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title"><i class="fa-brands fa-product-hunt"></i> Editar Producto</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+
+                <form asp-action="Create" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+
+                    <partial name="_EditProducto" />
+
+                    <div class="form-group mt-3">
+                        <input type="submit" value="Crear" class="btn btn-outline-primary" />
+                        <a asp-action="Index" class="btn btn-outline-success"><i class="fa-solid fa-left-long"></i> Regresar</a>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
