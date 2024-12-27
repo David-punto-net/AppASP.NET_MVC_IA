@@ -57,13 +57,10 @@ namespace AppVentasWeb.Controllers
         {
             CreateProductViewModel model = new()
             {
-
                 Categorias = await _combosHelper.GetComboCategoriasAsync(),
-
             };
             return View(model);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -166,8 +163,8 @@ namespace AppVentasWeb.Controllers
                 producto.Stock = model.Stock;
                 _context.Update(producto);
                 await _context.SaveChangesAsync();
-               
-            return RedirectToAction(nameof(Index));
+
+                return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateException dbUpdateException)
             {
@@ -187,7 +184,61 @@ namespace AppVentasWeb.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> AddImage(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            Producto producto = await _context.Productos.FindAsync(id);
+            if (producto == null)
+            {
+                return NotFound();
+            }
 
+            AddProductImageViewModel model = new()
+            {
+                ProductoId = producto.Id,
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddImage(AddProductImageViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                Guid imageId = Guid.Empty;
+
+                if (model.ImageFile != null)
+                {
+                    imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "productos");
+                }
+
+                Producto producto = await _context.Productos.FindAsync(model.ProductoId);
+
+                ProductImage productoImage = new()
+                {
+                    Producto = producto,
+                    ImageId = imageId
+                };
+
+                try
+                {
+                    _context.Add(productoImage);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Details), new { Id = model.ProductoId });
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
+            }
+
+            return View(model);
+        }
     }
 }
