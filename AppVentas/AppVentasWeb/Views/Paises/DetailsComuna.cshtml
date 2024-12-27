@@ -36,7 +36,7 @@
     </div>
     <div class="card-body">
         <p>
-            <a asp-action="AddCiudad" class="btn btn-primary" asp-route-id="@Model?.Id">Agregar Ciudad</a>
+            <a asp-action="AddCiudad" class="btn btn-outline-dark" asp-route-id="@Model?.Id"><i class="fa-solid fa-circle-plus"></i> Agregar Ciudad</a>
         </p>
 
         <table class="table table-hover table-responsive table-striped" id="MyTable">
@@ -57,9 +57,9 @@
                         </td>
 
                         <td>
-                            <a class="btn btn-outline-warning btn-sm" asp-action="EditCiudad" asp-route-id="@item.Id">Editar</a>
-                            <a class="btn btn-outline-info btn-sm" asp-action="DetailsCiudad" asp-route-id="@item.Id">Detalle</a>
-                            <a class="btn btn-outline-danger btn-sm" asp-action="DeleteCiudad" asp-route-id="@item.Id">Borrar</a>
+                            <a asp-action="EditCiudad" asp-route-id="@item.Id" class="btn btn-outline-warning"><i class="fa-solid fa-pen-to-square"></i></a>
+                            <a asp-action="DetailsCiudad" asp-route-id="@item.Id" class="btn btn-outline-info"><i class="fa-solid fa-circle-info"></i></a>
+                            <a asp-action="DeleteCiudad" asp-route-id="@item.Id" class="btn btn-outline-danger"><i class="fa-solid fa-trash"></i></a>
                         </td>
                     </tr>
                 }
