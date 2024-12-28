@@ -34,6 +34,36 @@ namespace AppVentasWeb.Helper
             return list;
         }
 
+        public async Task<IEnumerable<SelectListItem>> GetComboCategoriasAsync(IEnumerable<Categoria> filter)
+        {
+            List<Categoria> lstcategorias = await _context.Categorias.ToListAsync();
+            List<Categoria> categoriasFiltered = new();
+
+            foreach (Categoria categoria in lstcategorias)
+            {
+                if(!filter.Any(c => c.Id == categoria.Id))
+                {
+                    categoriasFiltered.Add(categoria);
+                }
+            }
+
+            List<SelectListItem> list =  categoriasFiltered.Select(x => new SelectListItem
+            {
+                Text = x.Nombre,
+                Value = $"{x.Id}"
+            })
+         .OrderBy(x => x.Text)
+         .ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "Seleccione una categoría...",
+                Value = "0"
+            });
+
+            return list;
+        }
+
         public async Task<IEnumerable<SelectListItem>> GetComboCiudadesAsync(int comunasId)
         {
             List<SelectListItem> list = await _context.Ciudades

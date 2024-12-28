@@ -1,6 +1,5 @@
 ﻿using AppVentasWeb.Data;
 using AppVentasWeb.Data.Entidades;
-using AppVentasWeb.Enum;
 using AppVentasWeb.Helper;
 using AppVentasWeb.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -239,6 +238,156 @@ namespace AppVentasWeb.Controllers
             }
 
             return View(model);
+        }
+
+        public async Task<IActionResult> DeleteImage(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            ProductImage productImage = await _context.ProductImages
+                                                .Include(p => p.Producto)
+                                                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (productImage == null)
+            {
+                return NotFound();
+            }
+
+            await _blobHelper.DeleteBlobAsync(productImage.ImageId, "productos");
+
+            _context.ProductImages.Remove(productImage);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Details), new { Id = productImage.Producto.Id });
+        }
+
+        public async Task<IActionResult> AddCategory(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            Producto producto = await _context.Productos
+                                      .Include(p => p.ProductCategories)
+                                       .ThenInclude(p => p.Categoria)
+                                       .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (producto == null)
+            {
+                return NotFound();
+            }
+
+            List<Categoria> categorias = producto.ProductCategories.Select(pc => new Categoria
+            {
+                Id = pc.Categoria.Id,
+                Nombre = pc.Categoria.Nombre,
+            }).ToList();
+
+            AddCategoryProductViewModel model = new()
+            {
+                ProductoId = producto.Id,
+                Categories = await _combosHelper.GetComboCategoriasAsync(categorias),
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddCategory(AddCategoryProductViewModel model)
+        {
+            Producto producto = await _context.Productos
+                                         .Include(p => p.ProductCategories)
+                                         .ThenInclude(p => p.Categoria)
+                                         .FirstOrDefaultAsync(p => p.Id == model.ProductoId);
+
+            if (ModelState.IsValid)
+            {
+                ProductCategory productCategory = new()
+                {
+                    Categoria = await _context.Categorias.FindAsync(model.CategoryId),
+                    Producto = producto,
+                };
+                try
+                {
+                    _context.Add(productCategory);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Details), new { Id = producto.Id });
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
+            }
+
+            List<Categoria> categorias = producto.ProductCategories.Select(pc => new Categoria
+            {
+                Id = pc.Categoria.Id,
+                Nombre = pc.Categoria.Nombre,
+            }).ToList();
+
+            model.Categories = await _combosHelper.GetComboCategoriasAsync(categorias);
+            return View(model);
+        }
+
+        public async Task<IActionResult> DeleteCategory(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            ProductCategory productCategory = await _context.ProductCategories
+                                                    .Include(pc => pc.Producto)
+                                                    .FirstOrDefaultAsync(pc => pc.Id == id);
+
+            if (productCategory == null)
+            {
+                return NotFound();
+            }
+            _context.ProductCategories.Remove(productCategory);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Details), new { Id = productCategory.Producto.Id });
+        }
+
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            Producto producto = await _context.Productos
+            .Include(p => p.ProductCategories)
+            .Include(p => p.ProductImages)
+            .FirstOrDefaultAsync(p => p.Id == id);
+            if (producto == null)
+            {
+                return NotFound();
+            }
+            return View(producto);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(Producto model)
+        {
+            Producto producto = await _context.Productos
+             .Include(p => p.ProductCategories)
+            .Include(p => p.ProductImages)
+            .FirstOrDefaultAsync(p => p.Id == model.Id);
+
+            _context.Productos.Remove(producto);
+            await _context.SaveChangesAsync();
+
+            foreach (ProductImage productImage in producto.ProductImages)
+            {
+                await _blobHelper.DeleteBlobAsync(productImage.ImageId, "productos");
+            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }
