@@ -1,0 +1,66 @@
+.card-img-top {
+    height: 200px;
+    width: 100%; /* Ajusta la imagen al ancho del contenedor */
+    object-fit: contain; /* Mantener proporciones y recortar el exceso */
+    border-radius: 50px;
+    padding: 10px;
+}
+
+.card {
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    display: flex;
+    flex-direction: column; /* Asegura que el contenido esté alineado verticalmente */
+}
+
+.card-body {
+    flex: 1; /* Permite que el cuerpo de la tarjeta ocupe el espacio disponible */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Distribuye el espacio uniformemente */
+    padding: 25px;
+}
+
+.card-title {
+    margin-bottom: 10px; /* Asegura que haya espacio entre el título y otros elementos */
+}
+
+/*.card-text {
+    flex-grow: 1;*/ /* Hace que la descripción ocupe el espacio disponible */
+/*}*/
+.card-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Número de líneas visibles */
+    -webkit-box-orient: vertical;
+    height: calc(1.2em * 3); /* Altura ajustada para el número de líneas visibles */
+    line-height: 1.2em; /* Ajusta según la altura de la línea */
+}
+
+
+.card-price {
+    margin-top: 10px; /* Asegura que el precio esté en la parte inferior */
+    color: rgb(0, 91, 228);
+}
+
+.btn-dark {
+    border-radius: 5px;
+    width: 100%; /* Asegura que el botón se ajuste al ancho del contenedor */
+    max-width: 200px; /* Tamaño máximo del botón */
+}
+
+    .btn-dark:hover {
+        background-color: forestgreen;
+        border: none;
+    }
+
+h3, h5 {
+    color: rgb(0, 91, 228);
+}
+
+.fixed-size-img {
+    height: 200px;
+    width: 100%;
+    object-fit: contain; 
+}
