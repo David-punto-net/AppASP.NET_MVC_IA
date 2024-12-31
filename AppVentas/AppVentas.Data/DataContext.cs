@@ -1,12 +1,13 @@
-﻿using AppVentasWeb.Data.Entidades;
+﻿using AppVentas.Models.Entidades;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppVentasWeb.Data
+namespace AppVentas.Data
 {
-    public class DataContex : IdentityDbContext<User>
+    public class DataContext : DbContext
+    //public class DataContext : IdentityDbContext<User>
     {
-        public DataContex(DbContextOptions<DataContex> options) : base(options)
+        public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
 
@@ -19,8 +20,6 @@ namespace AppVentasWeb.Data
         public DbSet<Producto> Productos { get; set; }
         public DbSet<ProductCategory> ProductCategories { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
-
-        public DbSet<TemporalSale> TemporalSales { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -35,5 +34,10 @@ namespace AppVentasWeb.Data
             modelBuilder.Entity<Producto>().HasIndex(c => c.Name).IsUnique();
             modelBuilder.Entity<ProductCategory>().HasIndex("ProductoId", "CategoriaId").IsUnique();
         }
+
+
     }
+ 
+
+
 }

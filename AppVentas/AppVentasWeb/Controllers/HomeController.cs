@@ -1,5 +1,6 @@
 using AppVentasWeb.Data;
 using AppVentasWeb.Data.Entidades;
+using AppVentasWeb.Helper;
 using AppVentasWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,46 +12,32 @@ namespace AppVentasWeb.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly DataContex _context;
+        private readonly IUserHelper _userHelper;
 
-        public HomeController(ILogger<HomeController> logger, DataContex context)
+        public HomeController(ILogger<HomeController> logger, DataContex context, IUserHelper userHelper)
         {
             _logger = logger;
             _context = context;
+            _userHelper= userHelper;
         }
 
         public async Task<IActionResult> Index()
         {
-            List<Producto>? productos = await _context.Productos
+            List<Producto> products = await _context.Productos
             .Include(p => p.ProductImages)
             .Include(p => p.ProductCategories)
             .OrderBy(p => p.Description)
             .ToListAsync();
-
-            List<ProductsHomeViewModel> productsHome = new() { new ProductsHomeViewModel() };
-            int i = 1;
-            foreach (Producto? producto in productos)
+            HomeViewModel model = new() { Productos = products };
+            User user = await _userHelper.GetUserAsync(User.Identity.Name);
+            if (user != null)
             {
-                if (i == 1)
-                {
-                    productsHome.LastOrDefault().Product1 = producto;
-                }
-                if (i == 2)
-                {
-                    productsHome.LastOrDefault().Product2 = producto;
-                }
-                if (i == 3)
-                {
-                    productsHome.LastOrDefault().Product3 = producto;
-                }
-                if (i == 4)
-                {
-                    productsHome.LastOrDefault().Product4 = producto;
-                    productsHome.Add(new ProductsHomeViewModel());
-                    i = 0;
-                }
-                i++;
+                model.Quantity = await _context.TemporalSales
+                                        .Where(ts => ts.User.Id == user.Id)
+                                        .SumAsync(ts => ts.Quantity);
             }
-            return View(productsHome);
+
+            return View(model);
         }
 
         public IActionResult Privacy()
@@ -68,6 +55,37 @@ namespace AppVentasWeb.Controllers
         public IActionResult Error404()
         {
             return View();
+        }
+
+        public async Task<IActionResult> Add(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            Producto producto = await _context.Productos.FindAsync(id);
+            if (producto == null)
+            {
+                return NotFound();
+            }
+            User user = await _userHelper.GetUserAsync(User.Identity.Name);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            TemporalSale temporalSale = new()
+            {
+                Producto = producto,
+                Quantity = 1,
+                User = user
+            };
+            _context.TemporalSales.Add(temporalSale);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
     }
 }

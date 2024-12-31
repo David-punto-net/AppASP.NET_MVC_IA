@@ -1,6 +1,6 @@
-﻿using AppVentasWeb.Data.Entidades;
+﻿using AppVentas.Models.Entidades;
 
-namespace AppVentasWeb.Models
+namespace AAppVentas.Models.Models
 {
     public class ProductsHomeViewModel
     {
