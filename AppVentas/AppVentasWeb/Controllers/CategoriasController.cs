@@ -9,6 +9,7 @@ using AppVentasWeb.Data;
 using AppVentasWeb.Data.Entidades;
 using System.Diagnostics.Metrics;
 using Microsoft.AspNetCore.Authorization;
+using Vereyon.Web;
 
 namespace AppVentasWeb.Controllers
 {
@@ -16,10 +17,12 @@ namespace AppVentasWeb.Controllers
     public class CategoriasController : Controller
     {
         private readonly DataContex _context;
+        private readonly IFlashMessage _flashMessage;
 
-        public CategoriasController(DataContex context)
+        public CategoriasController(DataContex context, IFlashMessage flashMessage)
         {
             _context = context;
+            _flashMessage = flashMessage;
         }
 
    
@@ -72,16 +75,18 @@ namespace AppVentasWeb.Controllers
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        ModelState.AddModelError(string.Empty, "Ya existe una categoría con el mismo nombre.");
+          
+                        _flashMessage.Danger("Ya existe una categoría con el mismo nombre.");
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                        _flashMessage.Danger(dbUpdateException.InnerException.Message);
                     }
                 }
                 catch (Exception exception)
                 {
-                    ModelState.AddModelError(string.Empty, exception.Message);
+                    
+                    _flashMessage.Danger(exception.Message);
                 }
             }
             return View(categoria);
@@ -127,16 +132,19 @@ namespace AppVentasWeb.Controllers
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        ModelState.AddModelError(string.Empty, "Ya existe una categoría con el mismo nombre.");
+                        
+                        _flashMessage.Danger("Ya existe una categoría con el mismo nombre.");
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                        
+                        _flashMessage.Danger(dbUpdateException.InnerException.Message);
                     }
                 }
                 catch (Exception exception)
                 {
-                    ModelState.AddModelError(string.Empty, exception.Message);
+                    
+                    _flashMessage.Danger(exception.Message);
                 }
             }
             return View(categoria);

@@ -10,6 +10,7 @@ using AppVentasWeb.Data.Entidades;
 using System.Diagnostics.Metrics;
 using AppVentasWeb.Models;
 using Microsoft.AspNetCore.Authorization;
+using Vereyon.Web;
 
 namespace AppVentasWeb.Controllers
 {
@@ -17,10 +18,12 @@ namespace AppVentasWeb.Controllers
     public class PaisesController : Controller
     {
         private readonly DataContex _context;
+        private readonly IFlashMessage _flashMessage;
 
-        public PaisesController(DataContex context)
+        public PaisesController(DataContex context, IFlashMessage flashMessage)
         {
             _context = context;
+            _flashMessage = flashMessage;
         }
 
       
@@ -146,11 +149,12 @@ namespace AppVentasWeb.Controllers
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        ModelState.AddModelError(string.Empty, "Ya existe un país con el mismo nombre.");
+                        _flashMessage.Danger("Ya existe un país con el mismo nombre.");
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                        
+                        _flashMessage.Danger(dbUpdateException.InnerException.Message);
                     }
                 }
                 catch (Exception exception)
@@ -209,11 +213,12 @@ namespace AppVentasWeb.Controllers
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        ModelState.AddModelError(string.Empty, "Ya existe una región con el mismo nombre.");
+                        _flashMessage.Danger("Ya existe una región con el mismo nombre.");
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                        
+                        _flashMessage.Danger(dbUpdateException.InnerException.Message);
                     }
                 }
                 catch (Exception exception)
@@ -272,11 +277,13 @@ namespace AppVentasWeb.Controllers
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        ModelState.AddModelError(string.Empty, "Ya existe una Comuna con el mismo nombre.");
+                        
+                        _flashMessage.Danger("Ya existe una Comuna con el mismo nombre.");
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                        
+                        _flashMessage.Danger(dbUpdateException.InnerException.Message);
                     }
                 }
                 catch (Exception exception)
@@ -334,11 +341,13 @@ namespace AppVentasWeb.Controllers
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        ModelState.AddModelError(string.Empty, "Ya existe una Ciuad con el mismo nombre.");
+                      
+                        _flashMessage.Danger("Ya existe una Ciudad con el mismo nombre.");
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                        
+                        _flashMessage.Danger(dbUpdateException.InnerException.Message);
                     }
                 }
                 catch (Exception exception)
@@ -392,11 +401,13 @@ namespace AppVentasWeb.Controllers
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        ModelState.AddModelError(string.Empty, "Ya existe un país con el mismo nombre.");
+                       
+                        _flashMessage.Danger("Ya existe un País con el mismo nombre.");
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                       
+                        _flashMessage.Danger(dbUpdateException.InnerException.Message);
                     }
                 }
                 catch (Exception exception)
@@ -467,11 +478,13 @@ namespace AppVentasWeb.Controllers
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        ModelState.AddModelError(string.Empty, "Ya existe una Región con el mismo nombre.");
+                       
+                        _flashMessage.Danger("Ya existe una Región con el mismo nombre.");
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                       
+                        _flashMessage.Danger(dbUpdateException.InnerException.Message);
                     }
                 }
                 catch (Exception exception)
@@ -541,11 +554,13 @@ namespace AppVentasWeb.Controllers
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        ModelState.AddModelError(string.Empty, "Ya existe una Comuna con el mismo nombre.");
+                    
+                        _flashMessage.Danger("Ya existe una Comuna con el mismo nombre.");
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                        
+                        _flashMessage.Danger(dbUpdateException.InnerException.Message);
                     }
                 }
                 catch (Exception exception)
@@ -613,11 +628,13 @@ namespace AppVentasWeb.Controllers
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        ModelState.AddModelError(string.Empty, "Ya existe una Ciudad con el mismo nombre.");
+                       
+                        _flashMessage.Danger("Ya existe una Ciudad con el mismo nombre.");
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    
+                        _flashMessage.Danger(dbUpdateException.InnerException.Message);
                     }
                 }
                 catch (Exception exception)

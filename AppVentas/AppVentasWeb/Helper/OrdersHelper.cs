@@ -3,6 +3,7 @@ using AppVentasWeb.Data;
 using AppVentasWeb.Data.Entidades;
 using AppVentasWeb.Enum;
 using AppVentasWeb.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace AppVentasWeb.Helper
 {
@@ -74,7 +75,30 @@ namespace AppVentasWeb.Helper
                     return response;
                 }
             }
+
             return response;
+        }
+
+        public async Task<Response> CancelOrderAsync(int id)
+        {
+            Sale sale = await _context.Sales
+                                .Include(s => s.SaleDetails)
+                                .ThenInclude(sd => sd.Producto)
+                                .FirstOrDefaultAsync(s => s.Id == id);
+
+            foreach (SaleDetail saleDetail in sale.SaleDetails)
+            {
+                Producto product = await _context.Productos.FindAsync(saleDetail.Producto.Id);
+                if (product != null)
+                {
+                    product.Stock += saleDetail.Quantity;
+                }
+            }
+
+            sale.OrderStatus = OrderStatus.Cancelado;
+            await _context.SaveChangesAsync();
+
+            return new Response { IsSuccess = true };
         }
     }
 }
