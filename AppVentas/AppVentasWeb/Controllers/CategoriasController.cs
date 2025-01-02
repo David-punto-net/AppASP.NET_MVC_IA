@@ -181,6 +181,7 @@ namespace AppVentasWeb.Controllers
             }
 
             await _context.SaveChangesAsync();
+            _flashMessage.Info("Registro borrado");
             return RedirectToAction(nameof(Index));
         }
     }
