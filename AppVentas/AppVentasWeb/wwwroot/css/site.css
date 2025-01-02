@@ -21,6 +21,17 @@ body {
   margin-bottom: 60px;
 }
 
+.carousel-inner {
+    width: auto;
+    height: 500px;
+    max-height: 500px !important;
+}
+
+.carousel-content {
+    color: black;
+    display: flex;
+    text-align: center;
+}
 
 /*Zoom images*/
 /*.zoom {

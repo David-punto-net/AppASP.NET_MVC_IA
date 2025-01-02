@@ -45,5 +45,7 @@ namespace AppVentasWeb.Data.Entidades
 
         [Display(Name = "Usuario")]
         public string FullNameWithDocument => $"{Nombres} {Apellidos} - {Rut}";
+
+        public ICollection<Sale> Sales { get; set; }
     }
 }
