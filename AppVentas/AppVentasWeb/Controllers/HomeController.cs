@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Drawing.Printing;
 
 namespace AppVentasWeb.Controllers
 {
@@ -25,21 +26,75 @@ namespace AppVentasWeb.Controllers
             _ordersHelper = ordersHelper;
         }
 
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        [HttpPost]
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            List<Producto> products = await _context.Productos
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "NameDesc" : "";
+            ViewData["PriceSortParm"] = sortOrder == "Price" ? "PriceDesc" : "Price";
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+            ViewData["CurrentFilter"] = searchString;
+
+
+            IQueryable<Producto> query = _context.Productos
             .Include(p => p.ProductImages)
             .Include(p => p.ProductCategories)
-            .Where(p => p.Stock > 0)
-            .OrderBy(p => p.Description)
-            .ToListAsync();
-            HomeViewModel model = new() { Productos = products };
+            .ThenInclude(pc => pc.Categoria);
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(p => (p.Name.ToLower().Contains(searchString.ToLower()) ||
+                p.ProductCategories.Any(pc => pc.Categoria.Nombre.ToLower().Contains(searchString.ToLower()))) &&
+                p.Stock > 0);
+            }
+            else
+            {
+                query = query.Where(p => p.Stock > 0);
+            }
+
+            switch (sortOrder)
+            {
+                case "NameDesc":
+                    query = query.OrderByDescending(p => p.Name);
+                    break;
+
+                case "Price":
+                    query = query.OrderBy(p => p.Price);
+                    break;
+
+                case "PriceDesc":
+                    query = query.OrderByDescending(p => p.Price);
+                    break;
+
+                default:
+                    query = query.OrderBy(p => p.Name);
+                    break;
+            }
+
+            int pageSize = 8;
+
+            HomeViewModel model = new()
+            {
+                Productos = await PaginatedList<Producto>.CreateAsync(query, pageNumber ?? 1, pageSize),
+                Categorias = await _context.Categorias.ToListAsync(),
+            };
+
             User user = await _userHelper.GetUserAsync(User.Identity.Name);
             if (user != null)
             {
                 model.Quantity = await _context.TemporalSales
                                         .Where(ts => ts.User.Id == user.Id)
                                         .SumAsync(ts => ts.Quantity);
+
+                ViewBag.Quantity = model.Quantity;
+
             }
 
             return View(model);
@@ -316,7 +371,5 @@ namespace AppVentasWeb.Controllers
         {
             return View();
         }
-
-       
     }
 }

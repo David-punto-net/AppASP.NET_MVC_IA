@@ -4,11 +4,48 @@
 }
  <link rel="stylesheet" href="~/css/grid.css" />
 
+<flash dismissable="true" />
 
- @if(Model.Quantity > 0)
+@* <h1>Shopping</h1> *@
+<h4>Categorías</h4>
+<div class="mb-2">
+    @foreach (var item in Model.Categorias)
+    {
+        <span>@item.Nombre&nbsp;&nbsp;</span>
+    }
+</div>
+
+<div class="mb-2">
+    <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">Ordenar por Nombre</a>&nbsp;&nbsp;
+    <a asp-action="Index" asp-route-sortOrder="@ViewData["PriceSortParm"]">Ordenar por Precio</a>
+</div>
+
+
+<div class="row">
+    <div class="col-md-6">
+
+        <form asp-action="Index" method="get">
+            <div class="form-actions no-color">
+                <p>
+                    <div class="input-group mb-3">
+                        <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="Buscar por nombre o categoría" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-outline-secondary"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        </div>
+                    </div>
+                </p>
+            </div>
+        </form>
+
+    </div>
+
+
+</div>
+
+@* @if (Model.Quantity > 0)
 {
-<a asp-action="ShowCart" class="btn btn-outline-primary"><i class="fa-solid fa-cart-shopping"></i> @Model.Quantity</a>
-}
+    <a asp-action="ShowCart" class="btn btn-outline-primary"><i class="fa-solid fa-cart-shopping"></i> @Model.Quantity</a>
+} *@
 
 <div class="container py-2">
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
@@ -48,3 +85,48 @@
     </div>
 </div>
 
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        @{
+            var prevDisabled2 = !Model.Productos.HasPreviousPage ? "disabled" : "";
+            var nextDisabled2 = !Model.Productos.HasNextPage ? "disabled" : "";
+            var totalPages = Model.Productos.TotalPages;
+            var currentPage = Model.Productos.PageIndex;
+        }
+        <li class="page-item @prevDisabled2">
+            <a class="page-link" asp-action="Index"
+               asp-route-sortOrder="@ViewData["CurrentSort"]"
+               asp-route-pageNumber="@(currentPage - 1)"
+               asp-route-currentFilter="@ViewData["CurrentFilter"]"
+               tabindex="-1">Anterior</a>
+        </li>
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(i == currentPage ? "active" : "")">
+                <a class="page-link" asp-action="Index"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]"
+                   asp-route-pageNumber="@i"
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]">@i @if (i == currentPage)
+                    {
+                        <span class="sr-only">(current)</span>
+                    }</a>
+            </li>
+        }
+        <li class="page-item @nextDisabled2">
+            <a class="page-link" asp-action="Index"
+               asp-route-sortOrder="@ViewData["CurrentSort"]"
+               asp-route-pageNumber="@(currentPage + 1)"
+               asp-route-currentFilter="@ViewData["CurrentFilter"]">Siguiente</a>
+        </li>
+    </ul>
+</nav>
+
+
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

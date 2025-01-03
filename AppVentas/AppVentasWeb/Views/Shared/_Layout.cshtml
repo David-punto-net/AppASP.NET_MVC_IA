@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var quantity = ViewBag.Quantity;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -58,6 +62,13 @@
                     <ul class="nav navbar-nav navbar-right">
                         @if (User.Identity.IsAuthenticated) 
                         {
+
+
+                            @if(@quantity > 0)
+                            {
+                                <a asp-action="ShowCart" class="btn btn-outline-dark"><i class="fa-solid fa-cart-shopping"></i> @quantity</a>
+                            }
+                            
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="ChangeUser">@User.Identity.Name</a>
                             </li>
