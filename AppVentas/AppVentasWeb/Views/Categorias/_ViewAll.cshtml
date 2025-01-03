@@ -1,0 +1,40 @@
+﻿@model IEnumerable<AppVentasWeb.Data.Entidades.Categoria>
+
+<table class="table table-striped table-bordered table-responsive-md smfont" id="CategoriesTable">
+    <colgroup>
+        <col span="1" />
+        <col span="1" />
+    </colgroup>
+    <thead>
+     
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductsNumber)
+            </th>
+            <th>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                     @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductsNumber)
+                </td>
+                <td>
+                    <a onclick="showInPopup('@Url.Action("AddOrEdit", "Categorias", new { id=item.Id },Context.Request.Scheme)' , 'Actualizar Categoría')" class="btn btn-sm btn-outline-info"><i class="fa-solid fa-pen-to-square"></i> </a>
+                    <button data-id="@item.Id" class="btn btn-sm btn-outline-danger deleteItem" data-bs-toggle="modal" data-bs-target="#deleteDialog">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

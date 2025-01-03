@@ -13,5 +13,8 @@ namespace AppVentasWeb.Data.Entidades
         public string Nombre { get; set; }
 
         public ICollection<ProductCategory> ProductCategories { get; set; }
+
+        [Display(Name = "# Productos")]
+        public int ProductsNumber => ProductCategories == null ? 0 : ProductCategories.Count();
     }
 }

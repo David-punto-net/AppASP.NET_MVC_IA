@@ -19,8 +19,11 @@
                 <div class="form-group row">
                     <div class="col-sm-1"></div>
                     <div class="col-sm-4">
-                        <a asp-action="Edit" class="btn btn-success" asp-route-id="@Model?.Id">Editar</a>
-                        <a asp-action="Index" class="btn btn-primary">Volver</a>
+                        @* <a asp-action="Edit" class="btn btn-success" asp-route-id="@Model?.Id">Editar</a> *@
+                        @* <a asp-action="Index" class="btn btn-primary">Volver</a> *@
+                        <div>
+                            <a asp-action="Index" class="btn btn-outline-success"><i class="fa-solid fa-arrow-rotate-left"></i> Regresar</a>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -10,6 +10,8 @@ using AppVentasWeb.Data.Entidades;
 using System.Diagnostics.Metrics;
 using Microsoft.AspNetCore.Authorization;
 using Vereyon.Web;
+using static AppVentasWeb.Helper.ModalHelper;
+using AppVentasWeb.Helper;
 
 namespace AppVentasWeb.Controllers
 {
@@ -25,14 +27,14 @@ namespace AppVentasWeb.Controllers
             _flashMessage = flashMessage;
         }
 
-   
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categorias.ToListAsync());
+            return View(await _context.Categorias
+                .Include(c => c.ProductCategories)
+                .ToListAsync());
         }
 
-       
         [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
@@ -51,138 +53,88 @@ namespace AppVentasWeb.Controllers
             return View(categoria);
         }
 
-        [HttpGet]
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-      
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Categoria categoria)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(categoria);
-
-                try
-                {
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (DbUpdateException dbUpdateException)
-                {
-                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
-                    {
-          
-                        _flashMessage.Danger("Ya existe una categoría con el mismo nombre.");
-                    }
-                    else
-                    {
-                        _flashMessage.Danger(dbUpdateException.InnerException.Message);
-                    }
-                }
-                catch (Exception exception)
-                {
-                    
-                    _flashMessage.Danger(exception.Message);
-                }
-            }
-            return View(categoria);
-        }
-
-     
-        [HttpGet]
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var categoria = await _context.Categorias.FindAsync(id);
-            if (categoria == null)
-            {
-                return NotFound();
-            }
-            return View(categoria);
-        }
-
-       
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Categoria categoria)
-        {
-            if (id != categoria.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(categoria);
-                    await _context.SaveChangesAsync();
-
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (DbUpdateException dbUpdateException)
-                {
-                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
-                    {
-                        
-                        _flashMessage.Danger("Ya existe una categoría con el mismo nombre.");
-                    }
-                    else
-                    {
-                        
-                        _flashMessage.Danger(dbUpdateException.InnerException.Message);
-                    }
-                }
-                catch (Exception exception)
-                {
-                    
-                    _flashMessage.Danger(exception.Message);
-                }
-            }
-            return View(categoria);
-        }
-
-     
-        [HttpGet]
+        [NoDirectAccess]
         public async Task<IActionResult> Delete(int? id)
+
         {
-            if (id == null)
+            Categoria category = await _context.Categorias.FirstOrDefaultAsync(c => c.Id == id);
+            try
             {
-                return NotFound();
+                _context.Categorias.Remove(category);
+                await _context.SaveChangesAsync();
+                _flashMessage.Info("Registro borrado.");
             }
-
-            var categoria = await _context.Categorias
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (categoria == null)
+            catch
             {
-                return NotFound();
+                _flashMessage.Danger("No se puede borrar la categoría porque tiene registros relacionados.");
             }
-
-            return View(categoria);
-        }
-
-    
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var categoria = await _context.Categorias.FindAsync(id);
-            if (categoria != null)
-            {
-                _context.Categorias.Remove(categoria);
-            }
-
-            await _context.SaveChangesAsync();
-            _flashMessage.Info("Registro borrado");
             return RedirectToAction(nameof(Index));
         }
+
+        [NoDirectAccess]
+        public async Task<IActionResult> AddOrEdit(int id = 0)
+        {
+            if (id == 0)
+            {
+                return View(new Categoria());
+            }
+            else
+            {
+                Categoria category = await _context.Categorias.FindAsync(id);
+                if (category == null)
+                {
+                    return NotFound();
+                }
+                return View(category);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddOrEdit(int id, Categoria category)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    if (id == 0) //Insert
+                    {
+                        _context.Add(category);
+                        await _context.SaveChangesAsync();
+                        _flashMessage.Info("Registro creado.");
+                    }
+                    else //Update
+                    {
+                        _context.Update(category);
+                        await _context.SaveChangesAsync();
+                        _flashMessage.Info("Registro actualizado.");
+                    }
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        _flashMessage.Danger("Ya existe una categoría con el mismo nombre.");
+                    }
+                    else
+                    {
+                        _flashMessage.Danger(dbUpdateException.InnerException.Message);
+                    }
+                    return View(category);
+                }
+                catch (Exception exception)
+                {
+                    _flashMessage.Danger(exception.Message);
+                    return View(category);
+                }
+                return Json(new
+                {
+                    isValid = true, html = ModalHelper.RenderRazorViewToString(this, "_ViewAll",_context.Categorias.Include(c => c.ProductCategories).ToList())
+                });
+            }
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "AddOrEdit", category) });
+        }
+
+
     }
 }
