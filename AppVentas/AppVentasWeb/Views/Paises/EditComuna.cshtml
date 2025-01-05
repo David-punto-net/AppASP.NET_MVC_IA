@@ -2,42 +2,26 @@
 
 @{
     ViewData["Title"] = "EditComuna";
+    Layout = null;
 }
 
 <flash dismissable="true" />
 
-<div class="card">
-    <div class="card-header">
-        <h5 class="card-title">Editar Comuna</h5>
-    </div>
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-8">
 
-                <form asp-action="EditComuna">
-                    @Html.AntiForgeryToken()
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-                    <input type="hidden" asp-for="Id" />
-                    <input type="hidden" asp-for="RegionId" />
-
-
-                    <partial name="_Comuna" />
-
-                    <div class="form-group row">
-                        <div class="col-sm-1"></div>
-                        <div class="col-sm-4">
-                            <input type="submit" value="Guardar" class="btn btn-success" />
-                            <a asp-action="DetailsRegion" asp-route-id="@Model.RegionId" class="btn btn-primary">Volver</a>
-                        </div>
-                    </div>
-                </form>
-
-            </div>
+<div class="container smfont">
+    <form asp-action="EditComuna" autocomplete="off" asp-route-id="@Model.Id" onsubmit="return jQueryAjaxPost(this);">
+        <div class="box-body">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="RegionId" />
+            <partial name="_Comuna" />
         </div>
-    </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa-solid fa-ban"></i> Cerrar</button>
+            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Guardar</button>
+        </div>
+    </form>
 </div>
-
 
 @section Scripts {
     @{

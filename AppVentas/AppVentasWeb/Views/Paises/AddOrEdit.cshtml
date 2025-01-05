@@ -1,17 +1,19 @@
-﻿@model AppVentasWeb.Models.CiudadViewModel
+﻿@model AppVentasWeb.Data.Entidades.Pais
 @{
-    ViewData["Title"] = "AddCiudad";
+    ViewData["Title"] = "País";
     Layout = null;
 }
 <flash dismissable="true" />
 
-
 <div class="container smfont">
-    <form asp-action="AddCiudad" autocomplete="off" asp-route-id="@Model.Id" onsubmit="return jQueryAjaxPost(this);">
+    <form asp-action="AddOrEdit" autocomplete="off" asp-route-id="@Model.Id" onsubmit="return jQueryAjaxPost(this);">
         <div class="box-body">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ComunaId" />
-            <partial name="_Ciudad" />
+            <div class="form-group">
+                <label asp-for="Nombre" class="control-label"></label>
+                <input asp-for="Nombre" class="form-control smfont" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa-solid fa-ban"></i> Cerrar</button>
@@ -26,11 +28,5 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-
-
-
-
-
-
 
 

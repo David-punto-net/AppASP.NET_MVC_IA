@@ -3,22 +3,27 @@
     ViewData["Title"] = "DetailsRegion";
 }
 
-<div class="card mb-3">
-    <div class="card-header">
-        <h5 class="card-title">Detalle Región</h5>
-    </div>
 
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-8">
-            
-                <partial name="_RegionDetalle" /> 
+<flash dismissable="true" />
 
-                <div class="form-group row">
-                    <div class="col-sm-2"></div>
-                    <div class="col-sm-8">
-                        <a asp-action="EditRegion" class="btn btn-warning" asp-route-id="@Model?.Id">Editar Region</a>
-                        <a asp-action="Details" class="btn btn-success" asp-route-id="@Model?.Pais.Id">Volver</a>
+
+<div class="container-fluid">
+    <div class="card mb-3">
+        <div class="card-header">
+            <i class="fa-solid fa-globe"></i> <strong>Detalle Región</strong>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+
+                    <partial name="_RegionDetalle" />
+
+                    <div class="form-group row">
+                        <div class="col-sm-2"></div>
+                        <div class="col-sm-8">
+                            <a asp-action="Details" class="btn btn-outline-dark" asp-route-id="@Model?.Pais.Id"><i class="fa-solid fa-arrow-rotate-left"></i> Regresar</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -27,66 +32,42 @@
 </div>
 
 
+<div class="container-fluid">
+    <div class="card mt-2">
+        <div class="card-header">
+            <i class="fa-solid fa-globe"></i> <strong>Comunas</strong>
+        </div>
+        <div class="card-body">
 
+            <p>
+                <a onclick="showInPopup('@Url.Action("AddComuna", "Paises", new { id = Model.Id }, Context.Request.Scheme)' ,'Nueva Comuna')" class="btn btn-outline-dark"><i class="fa-solid fa-circle-plus"></i> Agregar Comuna</a>
+            </p>
 
-<div class="card">
-    <div class="card-header">
+            <hr />
 
-        <h5 class="card-title">Comunas</h5>
+            <div id="view-all">
+                @await Html.PartialAsync("_ViewAllComunas", Model)
+            </div>
+
+        </div>
     </div>
-    <div class="card-body">
-        <p>
-            <a asp-action="AddComuna" class="btn btn-outline-dark" asp-route-id="@Model?.Id"><i class="fa-solid fa-circle-plus"></i> Agregar Comuna</a>
-        </p>
-
-        <table class="table table-hover table-responsive table-striped" id="MyTable">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Comunas.FirstOrDefault().Nombre)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Comunas.FirstOrDefault().NumeroDeCiudades)
-                    </th>
-
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.Comunas)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Nombre)
-                        </td>
-
-                        <td>
-                            @Html.DisplayFor(modelItem => item.NumeroDeCiudades)
-                        </td>
-
-                        <td>
-                            <a asp-action="EditComuna" asp-route-id="@item.Id" class="btn btn-outline-warning"><i class="fa-solid fa-pen-to-square"></i></a>
-                            <a asp-action="DetailsComuna" asp-route-id="@item.Id" class="btn btn-outline-info"><i class="fa-solid fa-circle-info"></i></a>
-                            <a asp-action="DeleteComuna" asp-route-id="@item.Id" class="btn btn-outline-danger"><i class="fa-solid fa-trash"></i></a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-
 </div>
 
 
- @section Scripts {
+
+ <partial name="_AddOrEditDialog" /> 
+<partial name="_DeleteDialog" />
+
+
+
+@section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    
+    <script src="~/js/showmodal.js"></script>
     <script type="text/javascript">
-
         $(document).ready(function () {
-            $('#MyTable').DataTable({
+            $('#ComunasTable').DataTable({
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
                 },
@@ -97,7 +78,8 @@
             });
         });
     </script>
+    <script>
+        sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Paises/DeleteComuna/', false);
+    </script>
 }
- 
-
 

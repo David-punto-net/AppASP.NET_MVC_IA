@@ -11,10 +11,12 @@
 <div class="mb-2">
     @foreach (var item in Model.Categorias)
     {
-        <span>@item.Nombre&nbsp;&nbsp;</span>
+        <span>
+            <a href="@Url.Action("Index", "Home", new { searchString = item.Nombre})"> @item.Nombre&nbsp;</a>
+        </span>
     }
 </div>
-
+<hr />
 <div class="mb-2">
     <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">Ordenar por Nombre</a>&nbsp;&nbsp;
     <a asp-action="Index" asp-route-sortOrder="@ViewData["PriceSortParm"]">Ordenar por Precio</a>

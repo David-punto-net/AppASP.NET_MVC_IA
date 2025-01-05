@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using AppVentasWeb.Data;
+﻿using AppVentasWeb.Data;
 using AppVentasWeb.Data.Entidades;
-using System.Diagnostics.Metrics;
+using AppVentasWeb.Helper;
 using AppVentasWeb.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Vereyon.Web;
+using static AppVentasWeb.Helper.ModalHelper;
 
 namespace AppVentasWeb.Controllers
 {
@@ -26,16 +22,15 @@ namespace AppVentasWeb.Controllers
             _flashMessage = flashMessage;
         }
 
-      
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Paises
                 .Include(c => c.Regiones)
+                .ThenInclude(s => s.Comunas)
                 .ToListAsync());
         }
 
-      
         [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
@@ -57,7 +52,6 @@ namespace AppVentasWeb.Controllers
             return View(pais);
         }
 
-   
         public async Task<IActionResult> DetailsRegion(int? id)
         {
             if (id == null)
@@ -79,7 +73,6 @@ namespace AppVentasWeb.Controllers
             return View(region);
         }
 
-
         public async Task<IActionResult> DetailsComuna(int? id)
         {
             if (id == null)
@@ -100,73 +93,7 @@ namespace AppVentasWeb.Controllers
             return View(comuna);
         }
 
-     
-        public async Task<IActionResult> DetailsCiudad(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var comuna = await _context.Ciudades
-                .Include(r => r.Comuna)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (comuna == null)
-            {
-                return NotFound();
-            }
-
-            return View(comuna);
-        }
-
-  
-        [HttpGet]
-        public IActionResult Create()
-        {
-            Pais pais = new()
-            {
-                Regiones = new List<Region>()
-            };
-
-            return View(pais);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Pais pais)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(pais);
-
-                try
-                {
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (DbUpdateException dbUpdateException)
-                {
-                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
-                    {
-                        _flashMessage.Danger("Ya existe un país con el mismo nombre.");
-                    }
-                    else
-                    {
-                        
-                        _flashMessage.Danger(dbUpdateException.InnerException.Message);
-                    }
-                }
-                catch (Exception exception)
-                {
-                    ModelState.AddModelError(string.Empty, exception.Message);
-                }
-            }
-            return View(pais);
-        }
-
- 
-        [HttpGet]
+        [NoDirectAccess]
         public async Task<IActionResult> AddRegion(int? id)
         {
             if (id == null)
@@ -189,7 +116,6 @@ namespace AppVentasWeb.Controllers
             return View(model);
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddRegion(RegionViewModel model)
@@ -207,7 +133,15 @@ namespace AppVentasWeb.Controllers
 
                     _context.Add(region);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Details), new { Id = model.PaisId });
+
+                    Pais pais = await _context.Paises
+                                    .Include(c => c.Regiones)
+                                    .ThenInclude(s => s.Comunas)
+                                    .FirstOrDefaultAsync(c => c.Id == model.PaisId);
+
+                    _flashMessage.Info("Registro creado.");
+
+                    return Json(new { isValid = true, html = ModalHelper.RenderRazorViewToString(this, "_ViewAllRegiones", pais) });
                 }
                 catch (DbUpdateException dbUpdateException)
                 {
@@ -217,7 +151,6 @@ namespace AppVentasWeb.Controllers
                     }
                     else
                     {
-                        
                         _flashMessage.Danger(dbUpdateException.InnerException.Message);
                     }
                 }
@@ -226,11 +159,10 @@ namespace AppVentasWeb.Controllers
                     ModelState.AddModelError(string.Empty, exception.Message);
                 }
             }
-            return View(model);
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "AddRegion", model) });
         }
 
-       
-        [HttpGet]
+        [NoDirectAccess]
         public async Task<IActionResult> AddComuna(int? id)
         {
             if (id == null)
@@ -253,7 +185,6 @@ namespace AppVentasWeb.Controllers
             return View(model);
         }
 
-    
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddComuna(ComunaViewModel model)
@@ -271,18 +202,24 @@ namespace AppVentasWeb.Controllers
 
                     _context.Add(comuna);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(DetailsRegion), new { Id = model.RegionId });
+
+                    Region region = await _context.Regiones
+                                    .Include(c => c.Comunas)
+                                    .ThenInclude(s => s.Ciudades)
+                                    .FirstOrDefaultAsync(c => c.Id == model.RegionId);
+
+                    _flashMessage.Info("Registro creado.");
+
+                    return Json(new { isValid = true, html = ModalHelper.RenderRazorViewToString(this, "_ViewAllComunas", region) });
                 }
                 catch (DbUpdateException dbUpdateException)
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        
                         _flashMessage.Danger("Ya existe una Comuna con el mismo nombre.");
                     }
                     else
                     {
-                        
                         _flashMessage.Danger(dbUpdateException.InnerException.Message);
                     }
                 }
@@ -291,11 +228,11 @@ namespace AppVentasWeb.Controllers
                     ModelState.AddModelError(string.Empty, exception.Message);
                 }
             }
-            return View(model);
+
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "AddComuna", model) });
         }
 
-     
-        [HttpGet]
+        [NoDirectAccess]
         public async Task<IActionResult> AddCiudad(int? id)
         {
             if (id == null)
@@ -318,7 +255,6 @@ namespace AppVentasWeb.Controllers
             return View(model);
         }
 
-        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddCiudad(CiudadViewModel model)
@@ -335,18 +271,23 @@ namespace AppVentasWeb.Controllers
 
                     _context.Add(ciudad);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(DetailsComuna), new { Id = model.ComunaId });
+
+                    Comuna comuna = await _context.Comunas
+                                 .Include(c => c.Ciudades)
+                                 .FirstOrDefaultAsync(c => c.Id == model.ComunaId);
+
+                    _flashMessage.Info("Registro creado.");
+
+                    return Json(new { isValid = true, html = ModalHelper.RenderRazorViewToString(this, "_ViewAllCiudades", comuna) });
                 }
                 catch (DbUpdateException dbUpdateException)
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                      
                         _flashMessage.Danger("Ya existe una Ciudad con el mismo nombre.");
                     }
                     else
                     {
-                        
                         _flashMessage.Danger(dbUpdateException.InnerException.Message);
                     }
                 }
@@ -355,71 +296,11 @@ namespace AppVentasWeb.Controllers
                     ModelState.AddModelError(string.Empty, exception.Message);
                 }
             }
-            return View(model);
+
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "AddCiudad", model) });
         }
 
-      
-        [HttpGet]
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var pais = await _context.Paises
-                       .Include(c => c.Regiones)
-                       .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (pais == null)
-            {
-                return NotFound();
-            }
-            return View(pais);
-        }
-
-       
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Pais pais)
-        {
-            if (id != pais.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(pais);
-                    await _context.SaveChangesAsync();
-
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (DbUpdateException dbUpdateException)
-                {
-                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
-                    {
-                       
-                        _flashMessage.Danger("Ya existe un País con el mismo nombre.");
-                    }
-                    else
-                    {
-                       
-                        _flashMessage.Danger(dbUpdateException.InnerException.Message);
-                    }
-                }
-                catch (Exception exception)
-                {
-                    ModelState.AddModelError(string.Empty, exception.Message);
-                }
-            }
-            return View(pais);
-        }
-
-       
-        [HttpGet]
+        [NoDirectAccess]
         public async Task<IActionResult> EditRegion(int? id)
         {
             if (id == null)
@@ -427,7 +308,6 @@ namespace AppVentasWeb.Controllers
                 return NotFound();
             }
 
-            //var region = await _context.Regiones.FindAsync(id);
             var region = await _context.Regiones
              .Include(c => c.Pais)
              .FirstOrDefaultAsync(m => m.Id == id);
@@ -447,7 +327,6 @@ namespace AppVentasWeb.Controllers
             return View(model);
         }
 
- 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditRegion(int id, RegionViewModel model)
@@ -461,29 +340,30 @@ namespace AppVentasWeb.Controllers
             {
                 try
                 {
-                    Region region = new()
-                    {
-                        Id = model.Id,
-                        Nombre = model.Nombre,
-                        Pais = await _context.Paises.FindAsync(model.PaisId),
-                        Comunas = new List<Comuna>()
-                    };
+                    Region region = await _context.Regiones.FindAsync(model.Id);
+                    region.Nombre = model.Nombre;
 
                     _context.Update(region);
+
+                    Pais pais = await _context.Paises
+                    .Include(c => c.Regiones)
+                    .ThenInclude(s => s.Comunas)
+                    .FirstOrDefaultAsync(c => c.Id == model.PaisId);
+
                     await _context.SaveChangesAsync();
 
-                    return RedirectToAction(nameof(Details), new { Id = model.PaisId });
+                    _flashMessage.Info("Registro actualizado.");
+
+                    return Json(new { isValid = true, html = ModalHelper.RenderRazorViewToString(this, "_ViewAllRegiones", pais) });
                 }
                 catch (DbUpdateException dbUpdateException)
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                       
                         _flashMessage.Danger("Ya existe una Región con el mismo nombre.");
                     }
                     else
                     {
-                       
                         _flashMessage.Danger(dbUpdateException.InnerException.Message);
                     }
                 }
@@ -492,10 +372,10 @@ namespace AppVentasWeb.Controllers
                     ModelState.AddModelError(string.Empty, exception.Message);
                 }
             }
-            return View(model);
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "EditRegion", model) });
         }
 
-     
+        [NoDirectAccess]
         public async Task<IActionResult> EditComuna(int? id)
         {
             if (id == null)
@@ -523,7 +403,6 @@ namespace AppVentasWeb.Controllers
             return View(model);
         }
 
-      
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditComuna(int id, ComunaViewModel model)
@@ -537,29 +416,30 @@ namespace AppVentasWeb.Controllers
             {
                 try
                 {
-                    Comuna comuna = new()
-                    {
-                        Id = model.Id,
-                        Nombre = model.Nombre,
-                        Region = await _context.Regiones.FindAsync(model.RegionId),
-                        Ciudades = new List<Ciudad>()
-                    };
+                    Comuna comuna = await _context.Comunas.FindAsync(model.Id);
+                    comuna.Nombre = model.Nombre;
 
                     _context.Update(comuna);
+
+                    Region region = await _context.Regiones
+                    .Include(c => c.Comunas)
+                    .ThenInclude(s => s.Ciudades)
+                    .FirstOrDefaultAsync(c => c.Id == model.RegionId);
+
                     await _context.SaveChangesAsync();
 
-                    return RedirectToAction(nameof(DetailsRegion), new { Id = model.RegionId });
+                    _flashMessage.Info("Registro actualizado.");
+
+                    return Json(new { isValid = true, html = ModalHelper.RenderRazorViewToString(this, "_ViewAllComunas", region) });
                 }
                 catch (DbUpdateException dbUpdateException)
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                    
                         _flashMessage.Danger("Ya existe una Comuna con el mismo nombre.");
                     }
                     else
                     {
-                        
                         _flashMessage.Danger(dbUpdateException.InnerException.Message);
                     }
                 }
@@ -568,10 +448,11 @@ namespace AppVentasWeb.Controllers
                     ModelState.AddModelError(string.Empty, exception.Message);
                 }
             }
-            return View(model);
+
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "EditComuna", model) });
         }
 
-       
+        [NoDirectAccess]
         public async Task<IActionResult> EditCiudad(int? id)
         {
             if (id == null)
@@ -598,7 +479,6 @@ namespace AppVentasWeb.Controllers
             return View(model);
         }
 
-        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditCiudad(int id, CiudadViewModel model)
@@ -612,28 +492,29 @@ namespace AppVentasWeb.Controllers
             {
                 try
                 {
-                    Ciudad ciudad = new()
-                    {
-                        Id = model.Id,
-                        Nombre = model.Nombre,
-                        Comuna = await _context.Comunas.FindAsync(model.ComunaId),
-                    };
+                    Ciudad ciudad = await _context.Ciudades.FindAsync(model.Id);
+                    ciudad.Nombre = model.Nombre;
 
                     _context.Update(ciudad);
+
+                    Comuna comuna = await _context.Comunas
+                                        .Include(c => c.Ciudades)
+                                        .FirstOrDefaultAsync(c => c.Id == model.ComunaId);
+
                     await _context.SaveChangesAsync();
 
-                    return RedirectToAction(nameof(DetailsComuna), new { Id = model.ComunaId });
+                    _flashMessage.Info("Registro actualizado.");
+
+                    return Json(new { isValid = true, html = ModalHelper.RenderRazorViewToString(this, "_ViewAllCiudades", comuna) });
                 }
                 catch (DbUpdateException dbUpdateException)
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                       
                         _flashMessage.Danger("Ya existe una Ciudad con el mismo nombre.");
                     }
                     else
                     {
-                    
                         _flashMessage.Danger(dbUpdateException.InnerException.Message);
                     }
                 }
@@ -642,60 +523,58 @@ namespace AppVentasWeb.Controllers
                     ModelState.AddModelError(string.Empty, exception.Message);
                 }
             }
-            return View(model);
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "EditCiudad", model) });
         }
 
-   
-        [HttpGet]
-        public async Task<IActionResult> Delete(int? id)
+        [NoDirectAccess]
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var pais = await _context.Paises
-                .Include(c => c.Regiones)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
+            Pais pais = await _context.Paises.FirstOrDefaultAsync(c => c.Id == id);
             if (pais == null)
             {
                 return NotFound();
             }
-
-            return View(pais);
+            try
+            {
+                _context.Paises.Remove(pais);
+                await _context.SaveChangesAsync();
+                _flashMessage.Info("Registro borrado.");
+            }
+            catch
+            {
+                _flashMessage.Danger("No se puede borrar el país porque tiene registros relacionados.");
+            }
+            return RedirectToAction(nameof(Index));
         }
 
-      
-        [HttpGet]
-        public async Task<IActionResult> DeleteRegion(int? id)
+        [NoDirectAccess]
+        public async Task<IActionResult> DeleteRegion(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var region = await _context.Regiones
-                     .Include(c => c.Pais)
-                     .FirstOrDefaultAsync(m => m.Id == id);
+            Region region = await _context.Regiones
+            .Include(s => s.Pais)
+            .FirstOrDefaultAsync(s => s.Id == id);
 
             if (region == null)
             {
                 return NotFound();
             }
-
-            return View(region);
+            try
+            {
+                _context.Regiones.Remove(region);
+                await _context.SaveChangesAsync();
+                _flashMessage.Info("Registro borrado.");
+            }
+            catch
+            {
+                _flashMessage.Danger("No se puede borrar la Región porque tiene registros relacionados.");
+            }
+            return RedirectToAction(nameof(Details), new { id = region.Pais.Id });
         }
 
-       
-        public async Task<IActionResult> DeleteComuna(int? id)
+        [NoDirectAccess]
+        public async Task<IActionResult> DeleteComuna(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var comuna = await _context.Comunas
+            Comuna comuna = await _context.Comunas
                      .Include(c => c.Region)
                      .FirstOrDefaultAsync(m => m.Id == id);
 
@@ -704,18 +583,23 @@ namespace AppVentasWeb.Controllers
                 return NotFound();
             }
 
-            return View(comuna);
+            try
+            {
+                _context.Comunas.Remove(comuna);
+                await _context.SaveChangesAsync();
+                _flashMessage.Info("Registro borrado.");
+            }
+            catch
+            {
+                _flashMessage.Danger("No se puede borrar la Comuna porque tiene registros relacionados.");
+            }
+            return RedirectToAction(nameof(DetailsRegion), new { id = comuna.Region.Id });
         }
 
-       
-        public async Task<IActionResult> DeleteCiudad(int? id)
+        [NoDirectAccess]
+        public async Task<IActionResult> DeleteCiudad(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var ciudad = await _context.Ciudades
+            Ciudad ciudad = await _context.Ciudades
                      .Include(c => c.Comuna)
                      .FirstOrDefaultAsync(m => m.Id == id);
 
@@ -724,80 +608,80 @@ namespace AppVentasWeb.Controllers
                 return NotFound();
             }
 
-            return View(ciudad);
-        }
-
-       
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var pais = await _context.Paises.FindAsync(id);
-            if (pais != null)
-            {
-                _context.Paises.Remove(pais);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-       
-        [HttpPost, ActionName("DeleteRegion")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteRegionConfirmed(int id)
-        {
-        
-            var region = await _context.Regiones
-                     .Include(c => c.Pais)
-                     .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (region != null)
-            {
-                _context.Regiones.Remove(region);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Details), new { Id = region.Pais.Id });
-        }
-
-        
-        [HttpPost, ActionName("DeleteComuna")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteComunaConfirmed(int id)
-        {
-
-            var comuna = await _context.Comunas
-                     .Include(c => c.Region)
-                     .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (comuna != null)
-            {
-                _context.Comunas.Remove(comuna);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(DetailsRegion), new { Id = comuna.Region.Id });
-        }
-
-        [HttpPost, ActionName("DeleteCiudad")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteCiudadConfirmed(int id)
-        {
-
-            var ciudad = await _context.Ciudades
-                     .Include(c => c.Comuna)
-                     .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (ciudad != null)
+            try
             {
                 _context.Ciudades.Remove(ciudad);
+                await _context.SaveChangesAsync();
+                _flashMessage.Info("Registro borrado.");
             }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(DetailsComuna), new { Id = ciudad.Comuna.Id });
+            catch
+            {
+                _flashMessage.Danger("No se puede borrar la Cioudad porque tiene registros relacionados.");
+            }
+            return RedirectToAction(nameof(DetailsComuna), new { id = ciudad.Comuna.Id });
         }
 
+        [NoDirectAccess]
+        public async Task<IActionResult> AddOrEdit(int id = 0)
+        {
+            if (id == 0)
+            {
+                return View(new Pais());
+            }
+            else
+            {
+                Pais pais = await _context.Paises.FindAsync(id);
+                if (pais == null)
+                {
+                    return NotFound();
+                }
+                return View(pais);
+            }
+        }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddOrEdit(int id, Pais country)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    if (id == 0) //Insert
+                    {
+                        _context.Add(country);
+                        await _context.SaveChangesAsync();
+                        _flashMessage.Info("Registro creado.");
+                    }
+                    else //Update
+                    {
+                        _context.Update(country);
+                        await _context.SaveChangesAsync();
+                        _flashMessage.Info("Registro actualizado.");
+                    }
+                    return Json(new
+                    {
+                        isValid = true,
+                        html = ModalHelper.RenderRazorViewToString(this, "_ViewAll", _context.Paises.Include(c => c.Regiones).ThenInclude(s => s.Comunas).ToList())
+                    });
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        _flashMessage.Danger("Ya existe un país con el mismo nombre.");
+                    }
+                    else
+                    {
+                        _flashMessage.Danger(dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    _flashMessage.Danger(exception.Message);
+                }
+            }
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "AddOrEdit", country) });
+        }
     }
 }

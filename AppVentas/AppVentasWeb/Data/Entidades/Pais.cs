@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Mono.TextTemplating;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 
@@ -18,5 +19,9 @@ namespace AppVentasWeb.Data.Entidades
 
         [Display(Name = "N° Regiones")]
         public int NumeroDeRegiones => Regiones == null ? 0 : Regiones.Count;
+
+        [Display(Name = "N° Comunas")]
+        public int NumeroDeComunas => Regiones == null ? 0 : Regiones.Sum(s => s.NumeroDeComunas);
+
     }
 }

@@ -2,38 +2,25 @@
 
 @{
     ViewData["Title"] = "AddRegion";
+    Layout = null;
 }
 
 <flash dismissable="true" />
 
-<div class="card">
-    <div class="card-header">
-        <h5 class="card-title">Crear Región</h5>
-    </div>
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-8">
-
-                <form asp-action="AddRegion">
-                    @Html.AntiForgeryToken()
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input type="hidden" asp-for="PaisId" />
-      
-                    <partial name="_Region" />
-
-                    <div class="form-group row">
-                        <div class="col-sm-1"></div>
-                        <div class="col-sm-4">
-                            <input type="submit" value="Crear" class="btn btn-success" />
-                            <a asp-action="Details" asp-route-id="@Model.PaisId" class="btn btn-primary">Volver</a>
-                        </div>
-                    </div>
-                </form>
-
-            </div>
+<div class="container smfont">
+    <form asp-action="AddRegion" autocomplete="off" asp-route-id="@Model.Id" onsubmit="return jQueryAjaxPost(this);">
+        <div class="box-body">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="PaisId" />
+            <partial name="_Region" />
         </div>
-    </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa-solid fa-ban"></i> Cerrar</button>
+            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Guardar</button>
+        </div>
+    </form>
 </div>
+
 
 @section Scripts {
     @{

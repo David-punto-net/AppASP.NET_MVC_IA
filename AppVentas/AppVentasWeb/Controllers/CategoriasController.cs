@@ -35,24 +35,6 @@ namespace AppVentasWeb.Controllers
                 .ToListAsync());
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var categoria = await _context.Categorias
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (categoria == null)
-            {
-                return NotFound();
-            }
-
-            return View(categoria);
-        }
-
         [NoDirectAccess]
         public async Task<IActionResult> Delete(int? id)
 
