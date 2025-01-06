@@ -30,12 +30,12 @@ namespace AppVentasWeb.Data.Entidades
 
         public ICollection<ProductCategory> ProductCategories { get; set; }
 
-        [Display(Name = "Categorías")]
+        [Display(Name = "N° Categorías")]
         public int CategoriesNumber => ProductCategories == null ? 0 : ProductCategories.Count;
 
         public ICollection<ProductImage> ProductImages { get; set; }
 
-        [Display(Name = "Fotos")]
+        [Display(Name = "N° Fotos")]
         public int ImagesNumber => ProductImages == null ? 0 : ProductImages.Count;
 
         //TODO: Pending to change to the correct path

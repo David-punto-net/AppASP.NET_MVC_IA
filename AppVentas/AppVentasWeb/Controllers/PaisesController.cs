@@ -139,7 +139,7 @@ namespace AppVentasWeb.Controllers
                                     .ThenInclude(s => s.Comunas)
                                     .FirstOrDefaultAsync(c => c.Id == model.PaisId);
 
-                    _flashMessage.Info("Registro creado.");
+                    _flashMessage.Confirmation("Registro creado.");
 
                     return Json(new { isValid = true, html = ModalHelper.RenderRazorViewToString(this, "_ViewAllRegiones", pais) });
                 }
@@ -208,7 +208,7 @@ namespace AppVentasWeb.Controllers
                                     .ThenInclude(s => s.Ciudades)
                                     .FirstOrDefaultAsync(c => c.Id == model.RegionId);
 
-                    _flashMessage.Info("Registro creado.");
+                    _flashMessage.Confirmation("Registro creado.");
 
                     return Json(new { isValid = true, html = ModalHelper.RenderRazorViewToString(this, "_ViewAllComunas", region) });
                 }
@@ -276,7 +276,7 @@ namespace AppVentasWeb.Controllers
                                  .Include(c => c.Ciudades)
                                  .FirstOrDefaultAsync(c => c.Id == model.ComunaId);
 
-                    _flashMessage.Info("Registro creado.");
+                    _flashMessage.Confirmation("Registro creado.");
 
                     return Json(new { isValid = true, html = ModalHelper.RenderRazorViewToString(this, "_ViewAllCiudades", comuna) });
                 }
@@ -352,7 +352,7 @@ namespace AppVentasWeb.Controllers
 
                     await _context.SaveChangesAsync();
 
-                    _flashMessage.Info("Registro actualizado.");
+                    _flashMessage.Confirmation("Registro actualizado.");
 
                     return Json(new { isValid = true, html = ModalHelper.RenderRazorViewToString(this, "_ViewAllRegiones", pais) });
                 }
@@ -428,7 +428,7 @@ namespace AppVentasWeb.Controllers
 
                     await _context.SaveChangesAsync();
 
-                    _flashMessage.Info("Registro actualizado.");
+                    _flashMessage.Confirmation("Registro actualizado.");
 
                     return Json(new { isValid = true, html = ModalHelper.RenderRazorViewToString(this, "_ViewAllComunas", region) });
                 }
@@ -503,7 +503,7 @@ namespace AppVentasWeb.Controllers
 
                     await _context.SaveChangesAsync();
 
-                    _flashMessage.Info("Registro actualizado.");
+                    _flashMessage.Confirmation("Registro actualizado.");
 
                     return Json(new { isValid = true, html = ModalHelper.RenderRazorViewToString(this, "_ViewAllCiudades", comuna) });
                 }

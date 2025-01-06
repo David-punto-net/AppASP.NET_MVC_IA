@@ -4,7 +4,68 @@
 }
 
 
+<div class="container-fluid">
 
+    <div class="card mt-2">
+
+        <div class="card-header">
+            <i class="fa-brands fa-product-hunt"></i> <strong>Productos</strong>
+        </div>
+
+        <div class="card-body">
+
+            <flash dismissable="true" />
+
+            <p>
+                <a onclick="showInPopup('@Url.Action("Create", "Productos", new { id = 0 }, Context.Request.Scheme)' ,'Nuevo producto')" class="btn btn-outline-dark"><i class="fa-solid fa-circle-plus"></i> Agregar producto</a>
+            </p>
+
+            <hr />
+
+            <div id="view-all">
+
+                @await Html.PartialAsync("_ViewAllProductos", Model)
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<partial name="_AddOrEditDialog" />
+
+<partial name="_DeleteDialog" />
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script src="~/js/showmodal.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#ProductosTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                "aLengthMenu": [
+                    [25, 50, 100, 200, -1],
+                    [25, 50, 100, 200, "Todos"]
+                ]
+            });
+        });
+    </script>
+
+    <script>
+        sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Productos/Delete/', false);
+    </script>
+}
+
+
+
+@* 
 
 <div class="container-fluid">
     <div class="card mt-2">
@@ -108,3 +169,9 @@
         });
     </script>
 }
+
+ *@
+
+
+ 
+

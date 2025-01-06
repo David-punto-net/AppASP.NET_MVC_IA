@@ -1,31 +1,24 @@
 ﻿@model AppVentasWeb.Models.CreateProductViewModel
 @{
     ViewData["Title"] = "Create";
+    Layout = null;
 }
 
-<div class="card">
-    <div class="card-header">
-        <i class="fa-brands fa-product-hunt"></i> <strong> Crear Productos</strong>
-    </div>
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-12">
+<flash dismissable="true" />
 
-                <form asp-action="Create" enctype="multipart/form-data">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input type="hidden" asp-for="Categorias" />
 
-                    <partial name="_CreateProducto" />
-
-                    <div class="form-group mt-3">
-                        <input type="submit" value="Crear" class="btn btn-outline-primary" />
-                        <a asp-action="Index" class="btn btn-outline-success"><i class="fa-solid fa-left-long"></i> Regresar</a>
-                    </div>
-                </form>
-
-            </div>
+<div class="container smfont">
+    <form asp-action="Create" enctype="multipart/form-data" autocomplete="off" asp-route-id="@Model.Id" onsubmit="return jQueryAjaxPost(this);">
+        <div class="box-body">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Categorias" />
+            <partial name="_CreateProducto" />
         </div>
-    </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa-solid fa-ban"></i> Cerrar</button>
+            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Guardar</button>
+        </div>
+    </form>
 </div>
 
 
@@ -34,3 +27,5 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+
+

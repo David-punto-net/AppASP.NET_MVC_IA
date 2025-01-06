@@ -1,37 +1,30 @@
 ﻿@model AppVentasWeb.Models.AddCategoryProductViewModel
 @{
     ViewData["Title"] = "AddCategory";
+    Layout = null;
 }
 
-<div class="card">
-    <div class="card-header">
-        <h5 class="card-title"><i class="fa-regular fa-image"></i>  Categoría / Producto</h5>
-    </div>
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-12">
+<flash dismissable="true" />
 
-                <form asp-action="AddCategory" enctype="multipart/form-data">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="container smfont">
+    <form asp-action="AddCategory" enctype="multipart/form-data" autocomplete="off" asp-route-id="@Model.ProductoId" onsubmit="return jQueryAjaxPost(this);">
+        <div class="box-body">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ProductoId" />
+            <input type="hidden" asp-for="Categories" />
 
-                    <input type="hidden" asp-for="ProductoId" />
-                    <input type="hidden" asp-for="Categories" />
-
-                    <div class="form-group">
-                        <label asp-for="CategoryId" class="control-label mb-2"></label>
-                        <select asp-for="CategoryId" asp-items="Model.Categories" class="form-control"></select>
-                        <span asp-validation-for="CategoryId" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-group mt-3">
-                        <input type="submit" value="Crear" class="btn btn-outline-primary" />
-                        <a asp-action="Details" asp-route-id="@Model.ProductoId" class="btn btn-outline-success"><i class="fa-solid fa-left-long"></i> Regresar</a>
-                    </div>
-                </form>
-
+            <div class="form-group">
+                <label asp-for="CategoryId" class="control-label mb-2"></label>
+                <select asp-for="CategoryId" asp-items="Model.Categories" class="form-control"></select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
+
         </div>
-    </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa-solid fa-ban"></i> Cerrar</button>
+            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Guardar</button>
+        </div>
+    </form>
 </div>
 
 

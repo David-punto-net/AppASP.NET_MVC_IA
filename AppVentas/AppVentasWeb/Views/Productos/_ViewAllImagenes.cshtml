@@ -1,0 +1,29 @@
+﻿@model AppVentasWeb.Data.Entidades.Producto
+
+
+
+<table class="table table-striped table-bordered table-responsive-md smfont" id="ImagesTable">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductImages.FirstOrDefault().ImageFullPath)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ProductImages)
+        {
+            <tr>
+                <td>
+                    <img src="@item.ImageFullPath" style="width:100px;" />
+                </td>
+                <td>
+                    <button data-id="@item.Id" class="btn btn-sm btn-outline-danger deleteItem" data-bs-toggle="modal" data-bs-target="#deleteDialog">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

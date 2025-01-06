@@ -5,7 +5,9 @@ using AppVentasWeb.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing;
 using Vereyon.Web;
+using static AppVentasWeb.Helper.ModalHelper;
 
 namespace AppVentasWeb.Controllers
 {
@@ -54,7 +56,7 @@ namespace AppVentasWeb.Controllers
             return View(product);
         }
 
-        [HttpGet]
+        [NoDirectAccess]
         public async Task<IActionResult> Create()
         {
             CreateProductViewModel model = new()
@@ -104,7 +106,17 @@ namespace AppVentasWeb.Controllers
                 {
                     _context.Add(producto);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+
+                    _flashMessage.Confirmation("Registro creado.");
+
+                    return Json(new
+                    {
+                        isValid = true,
+                        html = ModalHelper.RenderRazorViewToString(this, "_ViewAllProductos", _context.Productos
+                            .Include(p => p.ProductImages)
+                            .Include(p => p.ProductCategories)
+                            .ThenInclude(pc => pc.Categoria).ToList())
+                    });
                 }
                 catch (DbUpdateException dbUpdateException)
                 {
@@ -121,13 +133,18 @@ namespace AppVentasWeb.Controllers
                 }
                 catch (Exception exception)
                 {
-                    ModelState.AddModelError(string.Empty, exception.Message);
+                    _flashMessage.Danger(exception.Message);
                 }
             }
             model.Categorias = await _combosHelper.GetComboCategoriasAsync();
-            return View(model);
+            return Json(new 
+            { 
+                isValid = false, 
+                html = ModalHelper.RenderRazorViewToString(this, "Create", model) 
+            });
         }
 
+        [NoDirectAccess]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -165,10 +182,19 @@ namespace AppVentasWeb.Controllers
                 producto.Name = model.Name;
                 producto.Price = model.Price;
                 producto.Stock = model.Stock;
+
                 _context.Update(producto);
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction(nameof(Index));
+                _flashMessage.Confirmation("Registro actualizado.");
+                return Json(new
+                {
+                    isValid = true,
+                    html = ModalHelper.RenderRazorViewToString(this, "_ViewAllProductos", _context.Productos
+                .Include(p => p.ProductImages)
+                .Include(p => p.ProductCategories)
+                .ThenInclude(pc => pc.Categoria).ToList())
+                });
             }
             catch (DbUpdateException dbUpdateException)
             {
@@ -188,9 +214,11 @@ namespace AppVentasWeb.Controllers
            
                 _flashMessage.Danger(exception.Message);
             }
-            return View(model);
+
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "Edit", model) });
         }
 
+        [NoDirectAccess]
         public async Task<IActionResult> AddImage(int? id)
         {
             if (id == null)
@@ -237,7 +265,18 @@ namespace AppVentasWeb.Controllers
                 {
                     _context.Add(productoImage);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Details), new { Id = model.ProductoId });
+                    _flashMessage.Confirmation("Registro creado.");
+
+                    return Json(new
+                    {
+                        isValid = true,
+                        html = ModalHelper.RenderRazorViewToString(this, "Details", _context.Productos
+                                         .Include(p => p.ProductImages)
+                                         .Include(p => p.ProductCategories)
+                                         .ThenInclude(pc => pc.Categoria)
+                                         .FirstOrDefaultAsync(p => p.Id == model.ProductoId))
+
+                    });
                 }
                 catch (Exception exception)
                 {
@@ -245,15 +284,13 @@ namespace AppVentasWeb.Controllers
                 }
             }
 
-            return View(model);
+          
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "AddImage", model) });
         }
 
-        public async Task<IActionResult> DeleteImage(int? id)
+        [NoDirectAccess]
+        public async Task<IActionResult> DeleteImage(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
             ProductImage productImage = await _context.ProductImages
                                                 .Include(p => p.Producto)
@@ -264,14 +301,24 @@ namespace AppVentasWeb.Controllers
                 return NotFound();
             }
 
-            await _blobHelper.DeleteBlobAsync(productImage.ImageId, "productos");
+            try
+            {
+                await _blobHelper.DeleteBlobAsync(productImage.ImageId, "productos");
+            }
+            catch
+            {
+            }
 
             _context.ProductImages.Remove(productImage);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Details), new { Id = productImage.Producto.Id });
+            _flashMessage.Info("Registro borrado.");
+
+            return RedirectToAction(nameof(Details), new { id = productImage.Producto.Id });
+
         }
 
+        [NoDirectAccess]
         public async Task<IActionResult> AddCategory(int? id)
         {
             if (id == null)
@@ -323,7 +370,18 @@ namespace AppVentasWeb.Controllers
                 {
                     _context.Add(productCategory);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Details), new { Id = producto.Id });
+
+                    _flashMessage.Confirmation("Registro creado.");
+
+                    return Json(new
+                    {
+                        isValid = true,
+                        html = ModalHelper.RenderRazorViewToString(this, "Details", _context.Productos
+                                            .Include(p => p.ProductImages)
+                                            .Include(p => p.ProductCategories)
+                                            .ThenInclude(pc => pc.Categoria)
+                                            .FirstOrDefaultAsync(p => p.Id == model.ProductoId))
+                    });
                 }
                 catch (Exception exception)
                 {
@@ -338,15 +396,13 @@ namespace AppVentasWeb.Controllers
             }).ToList();
 
             model.Categories = await _combosHelper.GetComboCategoriasAsync(categorias);
-            return View(model);
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "AddCategory", model) });
         }
 
-        public async Task<IActionResult> DeleteCategory(int? id)
+        [NoDirectAccess]
+        public async Task<IActionResult> DeleteCategory(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+
             ProductCategory productCategory = await _context.ProductCategories
                                                     .Include(pc => pc.Producto)
                                                     .FirstOrDefaultAsync(pc => pc.Id == id);
@@ -355,45 +411,47 @@ namespace AppVentasWeb.Controllers
             {
                 return NotFound();
             }
-            _context.ProductCategories.Remove(productCategory);
+
+            try
+            {
+                _context.ProductCategories.Remove(productCategory);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Details), new { Id = productCategory.Producto.Id });
+            _flashMessage.Info("Registro borrado.");
+
+            }
+            catch
+            {
+                _flashMessage.Danger("No se puede borrar la imagen.");
+            }
+
+            return RedirectToAction(nameof(Details), new { id = productCategory.Producto.Id });
         }
 
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            Producto producto = await _context.Productos
-            .Include(p => p.ProductCategories)
-            .Include(p => p.ProductImages)
-            .FirstOrDefaultAsync(p => p.Id == id);
-            if (producto == null)
-            {
-                return NotFound();
-            }
-            return View(producto);
-        }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(Producto model)
+        [NoDirectAccess]
+        public async Task<IActionResult> Delete(int id)
         {
             Producto producto = await _context.Productos
              .Include(p => p.ProductCategories)
             .Include(p => p.ProductImages)
-            .FirstOrDefaultAsync(p => p.Id == model.Id);
+            .FirstOrDefaultAsync(p => p.Id == id);
 
-            _context.Productos.Remove(producto);
-            await _context.SaveChangesAsync();
+            if (producto == null)
+            {
+                return NotFound();
+            }
 
             foreach (ProductImage productImage in producto.ProductImages)
             {
                 await _blobHelper.DeleteBlobAsync(productImage.ImageId, "productos");
             }
+
+
+            _context.Productos.Remove(producto);
+            await _context.SaveChangesAsync();
+
+            _flashMessage.Info("Registro borrado.");
 
             return RedirectToAction(nameof(Index));
         }

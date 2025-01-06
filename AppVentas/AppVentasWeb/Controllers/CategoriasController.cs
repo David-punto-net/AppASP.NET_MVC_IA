@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using AppVentasWeb.Data;
+﻿using AppVentasWeb.Data;
 using AppVentasWeb.Data.Entidades;
-using System.Diagnostics.Metrics;
+using AppVentasWeb.Helper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Vereyon.Web;
 using static AppVentasWeb.Helper.ModalHelper;
-using AppVentasWeb.Helper;
 
 namespace AppVentasWeb.Controllers
 {
@@ -83,13 +77,13 @@ namespace AppVentasWeb.Controllers
                     {
                         _context.Add(category);
                         await _context.SaveChangesAsync();
-                        _flashMessage.Info("Registro creado.");
+                        _flashMessage.Confirmation("Registro creado.");
                     }
                     else //Update
                     {
                         _context.Update(category);
                         await _context.SaveChangesAsync();
-                        _flashMessage.Info("Registro actualizado.");
+                        _flashMessage.Confirmation("Registro actualizado.");
                     }
                 }
                 catch (DbUpdateException dbUpdateException)
@@ -102,16 +96,16 @@ namespace AppVentasWeb.Controllers
                     {
                         _flashMessage.Danger(dbUpdateException.InnerException.Message);
                     }
-                    return View(category);
                 }
                 catch (Exception exception)
                 {
                     _flashMessage.Danger(exception.Message);
-                    return View(category);
                 }
+
                 return Json(new
                 {
-                    isValid = true, html = ModalHelper.RenderRazorViewToString(this, "_ViewAll",_context.Categorias.Include(c => c.ProductCategories).ToList())
+                    isValid = true,
+                    html = ModalHelper.RenderRazorViewToString(this, "_ViewAll", _context.Categorias.Include(c => c.ProductCategories).ToList())
                 });
             }
             return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "AddOrEdit", category) });
