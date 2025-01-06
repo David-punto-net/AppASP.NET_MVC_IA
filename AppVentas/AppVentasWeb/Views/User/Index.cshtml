@@ -12,101 +12,21 @@
          <i class="fa-solid fa-user"></i> <strong>Usuarios</strong>
     </div>
     <div class="card-body">
+            <flash dismissable="true" />
         <p> 
             <a asp-controller="Account" asp-action="Register" class="btn btn-outline-dark"><i class="fa-solid fa-circle-plus"></i> Agregar Administrador</a>
         </p>
         <hr />
 
-        <div class="table-responsive">
+            <div id="view-all"> 
+                @await Html.PartialAsync("_ViewAll", Model)
+            </div>
 
-            <table class="table table-sm table-striped table-bordered table-responsive-sm smfont" id="MyTable">
-                  <colgroup>
-                    <col span="1" />
-                    <col span="1" />
-                </colgroup>
-            <thead>
-                    <tr>
-                    <th class="text-sm-start">
-                        @Html.DisplayNameFor(model => model.Rut)
-                    </th class="text-sm-start">
-                    <th>
-                        @Html.DisplayNameFor(model => model.Email)
-                    </th>
-                    <th class="text-sm-start">
-                        @Html.DisplayNameFor(model => model.FullName)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Ciudad.Comuna.Region.Pais.Nombre)
-                    </th>
-                    <th class="text-sm-start">
-                        @Html.DisplayNameFor(model => model.Ciudad.Comuna.Region.Nombre)
-                    </th>
-                    <th class="text-sm-start">
-                        @Html.DisplayNameFor(model => model.Ciudad.Comuna.Nombre)
-                    </th>
-                    <th class="text-sm-start">
-                        @Html.DisplayNameFor(model => model.Ciudad.Nombre)
-                    </th>
-                    <th class="text-sm-start">
-                        @Html.DisplayNameFor(model => model.Direccion)
-                    </th>
-                    <th class="text-sm-start" >
-                        @Html.DisplayNameFor(model => model.UserType)
-                    </th>
-                    <th class="text-sm-start" >
-                        Habilitado
-                    </th>
-                    <th class="text-sm-center">
-                        @Html.DisplayNameFor(model => model.ImageFullPath)
-                    </th> 
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                        <tr>
-                        <td class="text-sm-start">
-                            @Html.DisplayFor(modelItem => item.Rut)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Email)
-                        </td>
-                        <td class="text-sm-start">
-                                @Html.DisplayFor(modelItem => item.FullName)
-                        </td>
-            
-                        <td class="text-sm-start">
-                            @Html.DisplayFor(modelItem => item.Ciudad.Comuna.Region.Pais.Nombre)
-                        </td>
-                        <td class="text-sm-start">
-                            @Html.DisplayFor(modelItem => item.Ciudad.Comuna.Region.Nombre)
-                        </td>
-                        <td class="text-sm-start">
-                            @Html.DisplayFor(modelItem => item.Ciudad.Comuna.Nombre)
-                        </td>
-                        <td class="text-sm-start">
-                            @Html.DisplayFor(modelItem => item.Ciudad.Nombre)
-                        </td>
-                        <td class="text-sm-start">
-                            @Html.DisplayFor(modelItem => item.Direccion)
-                        </td>
-                        <td class="text-sm-start">
-                            @Html.DisplayFor(modelItem => item.UserType)
-                        </td>
-                         <td class="text-sm-center">
-                            @Html.DisplayFor(modelItem => item.EmailConfirmed)
-                        </td>
-                        <td class="text-sm-center">
-                            <img src="@item.ImageFullPath" style="width:50px; height:50px; border-radius:50px" />
-                        </td> 
-                    </tr>
-                }
-            </tbody>
-        </table>
-        </div>
     </div>
 </div>
 </div>
+
+
 
 @section Scripts {
     @{
@@ -116,7 +36,7 @@
     <script type="text/javascript">
 
         $(document).ready(function () {
-            $('#MyTable').DataTable({
+            $('#UsersTable').DataTable({
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
                 },
