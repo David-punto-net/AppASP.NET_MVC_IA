@@ -13,11 +13,20 @@ namespace AppVentasWeb.Helper
             _endpoint = new Uri(configuration["LlamaAI_Parametros:endpoint"]);
             _model = configuration["LlamaAI_Parametros:modelo"];
         }
-        public OllamaApiClient GetChatOllamaApiClient()
+        public OllamaApiClient GetChatOllamaApiClient(int IdModelo)
         {
 
             OllamaApiClient ollama = new OllamaApiClient(_endpoint);
-            ollama.SelectedModel = _model;
+
+            if (IdModelo == 1)
+            {
+                ollama.SelectedModel = "llama3.1:8b";
+            }
+            else
+            {
+                ollama.SelectedModel = "llama3.2:3b";
+            }
+           
 
             return ollama;
         }
@@ -25,10 +34,10 @@ namespace AppVentasWeb.Helper
         public async Task<string> GetRespuestaOllamaAsync(string userMensaje, string schemaBd)
         {
 
-            string msjSystem= "Eres un generador de consulats SQL de SqlServer. Debes devolver solo T-SQL, sin ninguna explicacion adicional, para las siguientes Tablas: "
+            string msjSystem= "Eres un generador de querys SQL. Devuelve solo T-SQL, sin ninguna explicación adicional, para las siguientes tablas: "
                 + schemaBd + ". NO debes generar querys que realizen cambios en la base de datos del tipo: INSERT,UPDATE,DELETE,DROP. La respuesta NO debe incluir caracteres como ```sql";
 
-            var ollama = GetChatOllamaApiClient();
+            var ollama = GetChatOllamaApiClient(2);
             var chat = new Chat(ollama, msjSystem);
 
 
@@ -48,7 +57,7 @@ namespace AppVentasWeb.Helper
 
             string msjSystem = "Eres un agente IA experto en información de la empresa, dedicado a ayudar amablemente a los usuarios. Proporcionas respuestas precisas y útiles, y tu enfoque principal es brindar una experiencia amigable y eficiente. debes responder basado en: "+ datosbd;
 
-            var ollama = GetChatOllamaApiClient();
+            var ollama = GetChatOllamaApiClient(1);
             var chat = new Chat(ollama, msjSystem);
 
             string respuesta2 = await chat.SendAsync(userMensaje).StreamToEndAsync();
