@@ -1,8 +1,10 @@
 using AppVentasWeb.Data;
 using AppVentasWeb.Data.Entidades;
 using AppVentasWeb.Helper;
+using Azure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Vereyon.Web;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -46,6 +48,7 @@ builder.Services.AddScoped<ICombosHelper, CombosHelper>();
 builder.Services.AddScoped<IBlobHelper, BlobHelper>();
 builder.Services.AddScoped<IMailHelper, MailHelper>();
 builder.Services.AddScoped<IOrdersHelper, OrdersHelper>();
+builder.Services.AddScoped<IAzureOpenAIClientHelper, AzureOpenAIClientHelper>();
 
 
 var app = builder.Build();
@@ -82,3 +85,31 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+
+
+/*
+
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Registrar la configuración
+builder.Services.Configure<AzureOpenAiParametros>(builder.Configuration.GetSection("AzureOpenAi_Parametros"));
+
+// Configurar el cliente AzureOpenAIClientHelper
+builder.Services.AddSingleton<IAzureOpenAIClientHelper, AzureOpenAIClientHelper>(provider =>
+{
+    var settings = provider.GetRequiredService<IOptions<AzureOpenAiParametros>>().Value;
+    var endpoint = new Uri(settings.Endpoint);
+    var credential = new AzureKeyCredential(settings.Credential);
+
+    return new AzureOpenAIClientHelper(endpoint, credential);
+});
+
+builder.Services.AddControllersWithViews();
+
+var app = builder.Build();
+
+
+
+*/

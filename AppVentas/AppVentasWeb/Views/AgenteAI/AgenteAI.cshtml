@@ -1,0 +1,48 @@
+﻿@model AppVentasWeb.Models.AgenteAIVewModel
+@{
+    ViewData["Title"] = "AgenteAI";
+    // Layout = null;
+}
+
+
+<div class="container-fluid">
+
+    <div class="card mt-2">
+
+        <div class="card-header">
+            <i class="fa-brands fa-rocketchat"></i> <strong>IA Chat</strong>
+        </div>
+
+        <div class="card-body">
+
+            <form class="form-floating mb-3" asp-action="AgenteAI" method="post">
+               
+                    <input type="text" class="form-control mt-3" id="UserImput" name="Userimput" placeholder="Enviar un mensaje al asistente" />
+                    <label for="UserImput">Pregunta al asistente</label>
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-primary mb-3">Enviar</button>
+                </div>
+                
+            </form>
+
+            <div class="container">
+                @if (Model?.RespuestaAsistente != null)
+                {
+                    <div class="alert alert-primary" role="alert">
+                        @Html.Raw(Model.RespuestaAsistente)
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

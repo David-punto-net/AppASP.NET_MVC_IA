@@ -1,0 +1,21 @@
+﻿@model AppVentasWeb.Models.AgenteAIVewModel
+
+<div id="agenteAI">
+    <h2>Interacción con la IA</h2>
+
+    <form id="agenteAIForm" method="post">
+        <div class="form-group">
+            <label for="UserInput">Pregunta al asistente</label>
+            <input type="text" class="form-control" id="Userimput" name="Userimput" value="@Model.Userimput" />
+        </div>
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    </form>
+
+    <h2>Respuesta de la IA</h2>
+    @if (Model?.RespuestaAsistente != null)
+    {
+        <div>
+            @Html.Raw(Model.RespuestaAsistente)
+        </div>
+    }
+</div>
