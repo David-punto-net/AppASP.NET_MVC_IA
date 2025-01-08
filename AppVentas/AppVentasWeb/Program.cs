@@ -49,6 +49,7 @@ builder.Services.AddScoped<IBlobHelper, BlobHelper>();
 builder.Services.AddScoped<IMailHelper, MailHelper>();
 builder.Services.AddScoped<IOrdersHelper, OrdersHelper>();
 builder.Services.AddScoped<IAzureOpenAIClientHelper, AzureOpenAIClientHelper>();
+builder.Services.AddScoped<IOllamaSharpHelper, OllamaSharpHelper>();
 
 
 var app = builder.Build();

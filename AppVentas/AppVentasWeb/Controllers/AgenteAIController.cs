@@ -15,13 +15,15 @@ namespace AppVentasWeb.Controllers
         private readonly DataContex _context;
         private readonly IUserHelper _userHelper;
         private readonly IAzureOpenAIClientHelper _azureOpenAIClientHelper;
+        private readonly IOllamaSharpHelper _ollamaSharpHelper;
 
 
-        public AgenteAIController(DataContex context, IUserHelper userHelper, IAzureOpenAIClientHelper azureOpenAIClientHelper)
+        public AgenteAIController(DataContex context, IUserHelper userHelper, IAzureOpenAIClientHelper azureOpenAIClientHelper, IOllamaSharpHelper ollamaSharpHelper)
         {
             _context = context;
             _userHelper = userHelper;
             _azureOpenAIClientHelper = azureOpenAIClientHelper;
+            _ollamaSharpHelper = ollamaSharpHelper;
         }
 
         private string GetDatabaseSchema()
@@ -126,6 +128,34 @@ namespace AppVentasWeb.Controllers
                     return JsonSerializer.Serialize(lista);
                 }
             }
+        }
+
+        [HttpGet]
+        public IActionResult AgenteAIollama()
+        {
+            return View("AgenteAI",new AgenteAIVewModel());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AgenteAIollama(AgenteAIVewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                string userInput = model.Userimput;
+                string schemaJson = GetDatabaseSchema();
+
+                string repuestaIASql  = await _ollamaSharpHelper.GetRespuestaOllamaAsync(userInput, schemaJson);
+
+                var datosBd = await GetEntitiesAsJsonAsync(repuestaIASql);
+
+                var respuestaAI = await _ollamaSharpHelper.GetRespuestaOllamaFinalAsync(userInput, datosBd);
+
+                model.RespuestaAsistente = Markdown.ToHtml(respuestaAI);
+
+
+            }
+
+            return View("AgenteAI", model);
         }
 
     }
