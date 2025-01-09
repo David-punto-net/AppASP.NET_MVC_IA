@@ -33,15 +33,15 @@
 
                       @foreach(var items in Model.Historial)
                         {
-                                if(Model.Historial.Contains("Usuario:"))
+                        if (Model.Historial.Contains("Asistente::"))
                                 {
-                                   <div class="alert alert-primary" role="alert">
+                            <div class="alert alert-success" role="alert">
                                     @Html.Raw(items.ToString())
                                     </div>
                                 } 
                                 else
                                 {
-                                        <div class="alert alert-success" role="alert">
+                            <div class="alert alert-primary" role="alert">
                                     @Html.Raw(items.ToString())
                                     </div>
                                 }

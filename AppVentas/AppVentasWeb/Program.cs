@@ -1,9 +1,17 @@
 using AppVentasWeb.Data;
 using AppVentasWeb.Data.Entidades;
 using AppVentasWeb.Helper;
+using AppVentasWeb.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.Memory;
 using Vereyon.Web;
+
+
+#pragma warning disable SKEXP0001
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +38,11 @@ builder.Services.AddIdentity<User, IdentityRole>(cfg =>
 }).AddDefaultTokenProviders()
   .AddEntityFrameworkStores<DataContex>();
 
+
+
+
+
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/NotAuthorized";
@@ -49,10 +62,6 @@ builder.Services.AddScoped<IOrdersHelper, OrdersHelper>();
 builder.Services.AddScoped<IAzureOpenAIClientHelper, AzureOpenAIClientHelper>();
 builder.Services.AddScoped<IOllamaSharpHelper, OllamaSharpHelper>();
 
-
-//#pragma warning disable SKEXP0070 // Este tipo se incluye solo con fines de evaluación y está sujeto a cambios o a que se elimine en próximas actualizaciones. Suprima este diagnóstico para continuar.
-//builder.Services.AddKernel();
-//builder.Services.AddOllamaChatCompletion("llama3.1:8b", new Uri("http://localhost:11434"));
 
 
 var app = builder.Build();
@@ -74,6 +83,9 @@ void SeedData(WebApplication app)
         service.SeedAsync().Wait();
     }
 }
+
+
+
 
 app.UseStatusCodePagesWithReExecute("/error/{0}");
 app.UseHttpsRedirection();
