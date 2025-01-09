@@ -28,10 +28,27 @@
             <div class="container">
                 @if (Model?.RespuestaAsistente != null)
                 {
-                    <div class="alert alert-primary" role="alert">
-                        @Html.Raw(Model.RespuestaAsistente)
-                    </div>
+                    
+                       @*  @Html.Raw(Model.RespuestaAsistente) *@
+
+                      @foreach(var items in Model.Historial)
+                        {
+                                if(Model.Historial.Contains("Usuario:"))
+                                {
+                                   <div class="alert alert-primary" role="alert">
+                                    @Html.Raw(items.ToString())
+                                    </div>
+                                } 
+                                else
+                                {
+                                        <div class="alert alert-success" role="alert">
+                                    @Html.Raw(items.ToString())
+                                    </div>
+                                }
+                        }
+             
                 }
+            
             </div>
         </div>
     </div>

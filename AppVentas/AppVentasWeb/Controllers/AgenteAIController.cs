@@ -4,8 +4,8 @@ using AppVentasWeb.Models;
 using Markdig;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Data;
-using System.Text;
 using System.Text.Json;
 
 namespace AppVentasWeb.Controllers
@@ -17,7 +17,6 @@ namespace AppVentasWeb.Controllers
         private readonly IAzureOpenAIClientHelper _azureOpenAIClientHelper;
         private readonly IOllamaSharpHelper _ollamaSharpHelper;
 
-
         public AgenteAIController(DataContex context, IUserHelper userHelper, IAzureOpenAIClientHelper azureOpenAIClientHelper, IOllamaSharpHelper ollamaSharpHelper)
         {
             _context = context;
@@ -28,7 +27,6 @@ namespace AppVentasWeb.Controllers
 
         private string GetDatabaseSchema()
         {
-
             var excludedTables = new HashSet<string>
             {
                 "AspNetRoles",
@@ -52,34 +50,32 @@ namespace AppVentasWeb.Controllers
                 })
                 .ToList();
 
-            //string jsonSchema = JsonSerializer.Serialize(schema, new JsonSerializerOptions
-            //{
-            //    WriteIndented = true 
-            //});
-
-
-            var stringBuilder = new StringBuilder();
-
-            foreach (var table in schema)
+            string jsonSchema = JsonSerializer.Serialize(schema, new JsonSerializerOptions
             {
-                stringBuilder.Append($"{table.Tabla}(");
-                foreach (var column in table.Columnas)
-                {
-                    stringBuilder.Append($"{column.Name} {column.tipo}, ");
-                }
-                // Remove the last comma and space
-                if (table.Columnas.Any())
-                {
-                    stringBuilder.Length -= 2;
-                }
-                stringBuilder.Append(") ");
-            }
+                WriteIndented = true
+            });
 
-            return stringBuilder.ToString();
-     
-            //return jsonSchema;
+            //var stringBuilder = new StringBuilder();
+
+            //foreach (var table in schema)
+            //{
+            //    stringBuilder.Append($"{table.Tabla}(");
+            //    foreach (var column in table.Columnas)
+            //    {
+            //        stringBuilder.Append($"{column.Name} {column.tipo}, ");
+            //    }
+            //    // Remove the last comma and space
+            //    if (table.Columnas.Any())
+            //    {
+            //        stringBuilder.Length -= 2;
+            //    }
+            //    stringBuilder.Append(") ");
+            //}
+
+            //return stringBuilder.ToString();
+
+            return jsonSchema;
         }
-
 
         [HttpGet]
         public IActionResult AgenteAI()
@@ -97,15 +93,11 @@ namespace AppVentasWeb.Controllers
 
                 string repuestaIASql = await _azureOpenAIClientHelper.GetRespuestaIA_SQLQueryAsync(userInput, schemaJson);
 
-
                 var datosJson = await GetEntitiesAsJsonAsync(repuestaIASql);
-
 
                 var respuestaAI = await _azureOpenAIClientHelper.GetRespuestaIA_FinalAsync(userInput, datosJson);
 
                 model.RespuestaAsistente = Markdown.ToHtml(respuestaAI);
-
-
             }
 
             return View(model);
@@ -133,7 +125,7 @@ namespace AppVentasWeb.Controllers
         [HttpGet]
         public IActionResult AgenteAIollama()
         {
-            return View("AgenteAI",new AgenteAIVewModel());
+            return View("AgenteAI", new AgenteAIVewModel());
         }
 
         [HttpPost]
@@ -141,22 +133,26 @@ namespace AppVentasWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                string userInput = model.Userimput;
-                string schemaJson = GetDatabaseSchema();
+                List<string> historial = new List<string>();
 
-                string repuestaIASql  = await _ollamaSharpHelper.GetRespuestaOllamaAsync(userInput, schemaJson);
+                historial.Add("Usuario: " + model.Userimput);
+
+                string userInput = model.Userimput;
+
+                string repuestaIASql = await _ollamaSharpHelper.GetRespuestaOllamaAsync(userInput);
 
                 var datosBd = await GetEntitiesAsJsonAsync(repuestaIASql);
 
                 var respuestaAI = await _ollamaSharpHelper.GetRespuestaOllamaFinalAsync(userInput, datosBd);
 
+                historial.Add("Asistente: " + Markdown.ToHtml(respuestaAI));
+
+                model.Historial = historial;
+
                 model.RespuestaAsistente = Markdown.ToHtml(respuestaAI);
-
-
             }
 
             return View("AgenteAI", model);
         }
-
     }
 }

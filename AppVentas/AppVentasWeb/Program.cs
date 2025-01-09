@@ -1,10 +1,8 @@
 using AppVentasWeb.Data;
 using AppVentasWeb.Data.Entidades;
 using AppVentasWeb.Helper;
-using Azure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Vereyon.Web;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,6 +50,11 @@ builder.Services.AddScoped<IAzureOpenAIClientHelper, AzureOpenAIClientHelper>();
 builder.Services.AddScoped<IOllamaSharpHelper, OllamaSharpHelper>();
 
 
+//#pragma warning disable SKEXP0070 // Este tipo se incluye solo con fines de evaluación y está sujeto a cambios o a que se elimine en próximas actualizaciones. Suprima este diagnóstico para continuar.
+//builder.Services.AddKernel();
+//builder.Services.AddOllamaChatCompletion("llama3.1:8b", new Uri("http://localhost:11434"));
+
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -88,29 +91,3 @@ app.MapControllerRoute(
 app.Run();
 
 
-
-/*
-
-
-var builder = WebApplication.CreateBuilder(args);
-
-// Registrar la configuración
-builder.Services.Configure<AzureOpenAiParametros>(builder.Configuration.GetSection("AzureOpenAi_Parametros"));
-
-// Configurar el cliente AzureOpenAIClientHelper
-builder.Services.AddSingleton<IAzureOpenAIClientHelper, AzureOpenAIClientHelper>(provider =>
-{
-    var settings = provider.GetRequiredService<IOptions<AzureOpenAiParametros>>().Value;
-    var endpoint = new Uri(settings.Endpoint);
-    var credential = new AzureKeyCredential(settings.Credential);
-
-    return new AzureOpenAIClientHelper(endpoint, credential);
-});
-
-builder.Services.AddControllersWithViews();
-
-var app = builder.Build();
-
-
-
-*/
