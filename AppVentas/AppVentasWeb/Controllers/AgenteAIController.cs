@@ -4,9 +4,12 @@ using AppVentasWeb.Models;
 using Markdig;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
+using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.ChatCompletion;
+using Microsoft.SemanticKernel.Connectors.OpenAI;
 using System.Data;
 using System.Text.Json;
+using System.Threading;
 
 namespace AppVentasWeb.Controllers
 {
@@ -16,13 +19,15 @@ namespace AppVentasWeb.Controllers
         private readonly IUserHelper _userHelper;
         private readonly IAzureOpenAIClientHelper _azureOpenAIClientHelper;
         private readonly IOllamaSharpHelper _ollamaSharpHelper;
+        private readonly Kernel _kernel;
 
-        public AgenteAIController(DataContex context, IUserHelper userHelper, IAzureOpenAIClientHelper azureOpenAIClientHelper, IOllamaSharpHelper ollamaSharpHelper)
+        public AgenteAIController(DataContex context, IUserHelper userHelper, IAzureOpenAIClientHelper azureOpenAIClientHelper, IOllamaSharpHelper ollamaSharpHelper, Kernel kernel)
         {
             _context = context;
             _userHelper = userHelper;
             _azureOpenAIClientHelper = azureOpenAIClientHelper;
             _ollamaSharpHelper = ollamaSharpHelper;
+            _kernel = kernel;
         }
 
         private string GetDatabaseSchema()
@@ -133,26 +138,81 @@ namespace AppVentasWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                List<string> historial = new List<string>();
 
-                historial.Add("Usuario: " + model.Userimput);
+                ChatHistory history = new ChatHistory();
+                var schemaBd = GetDatabaseSchemaJson();
 
-                string userInput = model.Userimput;
 
-                string repuestaIASql = await _ollamaSharpHelper.GetRespuestaOllamaAsync(userInput);
+               
 
-                var datosBd = await GetEntitiesAsJsonAsync(repuestaIASql);
+               string msjSystem = @"Eres un generador de querys SQL. Devuelve solo T-SQL, sin ninguna explicación adicional, para las siguientes tablas: @"
+                                   + schemaBd + ". Siempre debes usar alias para las columnas relacionado con la informacion a mostrar, NO debes generar querys que realizen cambios en la base de datos del tipo: INSERT,UPDATE,DELETE,DROP. La respuesta NO debe incluir caracteres como ```sql";
 
-                var respuestaAI = await _ollamaSharpHelper.GetRespuestaOllamaFinalAsync(userInput, datosBd);
 
-                historial.Add("Asistente: " + Markdown.ToHtml(respuestaAI));
+                history.AddSystemMessage(msjSystem);
 
-                model.Historial = historial;
 
-                model.RespuestaAsistente = Markdown.ToHtml(respuestaAI);
+                OpenAIPromptExecutionSettings executionSettings = new()
+                {
+                    ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions,
+                    Temperature = 0.1,
+                    TopP = 1.0,
+                };
+
+                history.AddUserMessage(model.Userimput);
+
+                var chatCompletionService = _kernel.GetRequiredService<IChatCompletionService>();
+                var result = await chatCompletionService.GetChatMessageContentAsync(model.Userimput, executionSettings, _kernel);
+
+
+                history.AddAssistantMessage(result.Items[0].ToString());
+
+                //var datosBd = await GetEntitiesAsJsonAsync(result.Items[0].ToString());
+
+                //var respuestaAI = await _ollamaSharpHelper.GetRespuestaOllamaFinalAsync(userInput, datosBd);
+
+                //historial.Add("Asistente: " + Markdown.ToHtml(respuestaAI));
+
+                //model.Historial = historial;
+
+                model.RespuestaAsistente = Markdown.ToHtml(result.Items[0].ToString());
             }
 
             return View("AgenteAI", model);
         }
+
+        private string GetDatabaseSchemaJson()
+        {
+            var excludedTables = new HashSet<string>
+            {
+                "AspNetRoles",
+                "AspNetRoleClaims",
+                "AspNetUserClaims",
+                "AspNetUserLogins",
+                "AspNetUserRoles",
+                "AspNetUserTokens"
+            };
+
+            var schema = _context.Model.GetEntityTypes()
+                .Where(entity => !excludedTables.Contains(entity.GetTableName()))
+                .Select(entity => new
+                {
+                    Tabla = entity.GetTableName(),
+                    Columnas = entity.GetProperties().Select(property => new
+                    {
+                        Name = property.Name,
+                        tipo = property.GetColumnType()
+                    })
+                })
+                .ToList();
+
+            string jsonSchema = JsonSerializer.Serialize(schema, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+
+            return jsonSchema;
+        }
+
     }
 }

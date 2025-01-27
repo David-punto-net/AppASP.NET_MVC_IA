@@ -72,7 +72,7 @@ namespace AppVentasWeb.Helper
             var schemaBd = GetDatabaseSchemaJson();
 
             string msjSystem = "Eres un generador de querys SQL. Devuelve solo T-SQL, sin ninguna explicación adicional, para las siguientes tablas: "
-                + schemaBd + ". NO debes generar querys que realizen cambios en la base de datos del tipo: INSERT,UPDATE,DELETE,DROP. La respuesta NO debe incluir caracteres como ```sql";
+                + schemaBd + ". Siempre debes usar alias para las columnas que se relacionen con la informacion a mostrar, NO debes generar querys que realizen cambios en la base de datos del tipo: INSERT,UPDATE,DELETE,DROP. La respuesta NO debe incluir caracteres como ```sql";
 
             var ollama = GetChatOllamaApiClient(1);
             var chat = new Chat(ollama, msjSystem);
@@ -89,7 +89,7 @@ namespace AppVentasWeb.Helper
 
         public async Task<string> GetRespuestaOllamaFinalAsync(string userMensaje, string datosbd)
         {
-            string msjSystem = "Eres un agente IA experto en información de la empresa. Proporcionas respuestas precisas y útiles, y tu enfoque principal es brindar una experiencia amigable y eficiente. debes responder basado en estos datos: " + datosbd;
+            string msjSystem = "Eres un agente IA experto en información de la empresa. Proporcionas respuestas precisas y útiles, y tu enfoque principal es brindar una experiencia amigable y eficiente. debes responder a la pregunta con los siguientes datos: " + datosbd +" .esto es la respuesta a lo que se te consulto";
 
             var ollama = GetChatOllamaApiClient(2);
             var chat = new Chat(ollama, msjSystem);

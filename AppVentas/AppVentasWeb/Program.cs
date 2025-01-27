@@ -2,10 +2,13 @@ using AppVentasWeb.Data;
 using AppVentasWeb.Data.Entidades;
 using AppVentasWeb.Helper;
 using AppVentasWeb.Options;
+using Azure.AI.OpenAI;
+using Azure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Memory;
 using Vereyon.Web;
 
@@ -41,8 +44,6 @@ builder.Services.AddIdentity<User, IdentityRole>(cfg =>
 
 
 
-
-
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/NotAuthorized";
@@ -61,6 +62,31 @@ builder.Services.AddScoped<IMailHelper, MailHelper>();
 builder.Services.AddScoped<IOrdersHelper, OrdersHelper>();
 builder.Services.AddScoped<IAzureOpenAIClientHelper, AzureOpenAIClientHelper>();
 builder.Services.AddScoped<IOllamaSharpHelper, OllamaSharpHelper>();
+
+
+builder.Services.AddOptions<SemanticKernelOptions>()
+                .Bind(builder.Configuration.GetSection(nameof(SemanticKernelOptions)))
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+
+
+builder.Services.AddTransient(serviceProvider =>
+{
+    var oaiOptions = serviceProvider.GetRequiredService<IOptions<SemanticKernelOptions>>().Value;
+
+    var oaiClient = new AzureOpenAIClient(oaiOptions.Endpoint, new AzureKeyCredential(oaiOptions.Key), new AzureOpenAIClientOptions(oaiOptions.ServiceVersion));
+
+    var kernelBuilder = Kernel.CreateBuilder();
+
+    kernelBuilder.AddAzureOpenAIChatCompletion(oaiOptions.ChatModel, oaiClient);
+
+
+    var kernel = kernelBuilder.Build();
+
+    ChatHistory chatHistory = new ChatHistory();
+
+    return kernel;
+});
 
 
 

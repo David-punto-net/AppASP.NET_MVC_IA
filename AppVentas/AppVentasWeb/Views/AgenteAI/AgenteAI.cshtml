@@ -28,12 +28,13 @@
             <div class="container">
                 @if (Model?.RespuestaAsistente != null)
                 {
-                    
-                       @*  @Html.Raw(Model.RespuestaAsistente) *@
+                    <div class="alert alert-success" role="alert">
+                        @Html.Raw(Model.RespuestaAsistente)
+                    </div>
 
-                      @foreach(var items in Model.Historial)
+                     @*  @foreach(var items in Model.Historial)
                         {
-                        if (Model.Historial.Contains("Asistente::"))
+                        if (items.Contains("Asistente:"))
                                 {
                             <div class="alert alert-success" role="alert">
                                     @Html.Raw(items.ToString())
@@ -45,7 +46,7 @@
                                     @Html.Raw(items.ToString())
                                     </div>
                                 }
-                        }
+                        } *@
              
                 }
             

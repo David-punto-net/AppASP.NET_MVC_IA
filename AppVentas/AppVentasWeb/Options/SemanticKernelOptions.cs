@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Azure.AI.OpenAI;
+using System.ComponentModel.DataAnnotations;
 
 namespace AppVentasWeb.Options
 {
@@ -13,5 +14,8 @@ namespace AppVentasWeb.Options
 
         [Required(AllowEmptyStrings = false)]
         public string Key { get; init; }
+
+        public AzureOpenAIClientOptions.ServiceVersion ServiceVersion { get; set; } = AzureOpenAIClientOptions.ServiceVersion.V2024_10_01_Preview;
+
     }
 }
