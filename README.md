@@ -1,5 +1,4 @@
 # AppVentas
-Repositorio para aplicacion ASP.NET 
 # Proyecto ASP.NET MVC con .NET 8
 
 Este proyecto es una aplicación web desarrollada con ASP.NET Core MVC y .NET 8. Implementa funcionalidades de autenticación, gestión de usuarios, administración de productos y procesamiento de pedidos y un agente IA.
