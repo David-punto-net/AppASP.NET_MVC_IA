@@ -35,3 +35,5 @@ DataTables: Biblioteca para la gestión de tablas dinámicas.
 Azure: Plataforma de nube utilizada para el despliegue.
 
 Identity Framework: Manejador de autenticación y autorización de usuarios.
+
+Azure Blob Storage: Almacenamiento de imagenes.
