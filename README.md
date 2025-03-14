@@ -37,4 +37,5 @@ Azure: Plataforma de nube utilizada para el despliegue.
 Identity Framework: Manejador de autenticación y autorización de usuarios.
 
 Azure Blob Storage: Almacenamiento de imagenes.
-![image](https://github.com/user-attachments/assets/a28fc18b-0315-454c-a429-af2cf9add402)
+![image](https://github.com/user-attachments/assets/7b86b690-331e-4318-a4d7-69dc6711543f)
+
