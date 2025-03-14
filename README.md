@@ -35,5 +35,3 @@ DataTables: Biblioteca para la gestión de tablas dinámicas.
 Azure: Plataforma de nube utilizada para el despliegue.
 
 Identity Framework: Manejador de autenticación y autorización de usuarios.
-
-MailKit: Librería para el envío de correos electrónicos.
