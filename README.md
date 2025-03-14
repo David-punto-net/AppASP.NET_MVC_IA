@@ -38,5 +38,6 @@ Identity Framework: Manejador de autenticación y autorización de usuarios.
 
 Azure Blob Storage: Almacenamiento de imagenes.
 
-![image](https://github.com/user-attachments/assets/7b86b690-331e-4318-a4d7-69dc6711543f)
+![image](https://github.com/user-attachments/assets/155e1caf-95ed-42ba-973e-0183824abe65)
+
 
