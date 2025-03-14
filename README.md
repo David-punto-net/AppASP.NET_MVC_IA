@@ -16,7 +16,7 @@ Interfaz Dinámica: Uso de DataTables, ventanas modales y mejoras en la UI con B
 
 Persistencia de Datos: Implementación con Entity Framework Core y migraciones para la base de datos.
 
-Despliegue en Azure: Configuración para publicar la aplicación en la nube.
+Azure: Azure OpenAI, Azure Blob Storage, Azure SQL Database.
 
 # Tecnologías Utilizadas
 
