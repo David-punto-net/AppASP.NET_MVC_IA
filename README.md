@@ -56,5 +56,8 @@ Azure Blob Storage: Almacenamiento de imagenes.
 
 ![image](https://github.com/user-attachments/assets/ca0727ce-991c-4369-8d7a-85fae9f32dbd)
 
+![image](https://github.com/user-attachments/assets/5f50c0ac-fb97-44c7-af83-2aa170facc3e)
+
+
 
 
