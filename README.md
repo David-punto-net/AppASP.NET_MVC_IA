@@ -10,7 +10,7 @@ Gestión de Usuarios: Administración de roles y permisos, confirmación de corr
 
 Carro de Compras: Agregado de productos al carrito, gestión de pedidos y pasarela de pagos Webpay plus.
 
-Administración: Panel de control para gestionar productos, categorías, países, estados y ciudades.
+Administración: Panel de control para gestionar productos, categorías, países, regiones, comunas y ciudades.
 
 Interfaz Dinámica: Uso de DataTables, ventanas modales y mejoras en la UI con Bootstrap.
 
