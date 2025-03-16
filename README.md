@@ -12,7 +12,7 @@ Carro de Compras: Agregado de productos al carrito, gestión de pedidos y pasare
 
 Pasarela de Pago: Webpay plus.
 
-Administración: Panel de control para gestionar productos, categorías, países, regiones, comunas y ciudades.
+Administración: Panel de control para gestionar productos, categorías, países, regiones, comunas y ciudades etc...
 
 Interfaz Dinámica: Uso de ventanas modales y mejoras en la UI con Bootstrap.
 
