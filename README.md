@@ -8,7 +8,7 @@ Autenticación y Autorización: Implementación de login, logout, registro de us
 
 Gestión de Usuarios: Administración de roles y permisos, confirmación de correo y seguridad en accesos.
 
-Carro de Compras: Agregado de productos al carrito, gestión de pedidos y pasarela de pagos webpay plus.
+Carro de Compras: Agregado de productos al carrito, gestión de pedidos y pasarela de pagos Webpay plus.
 
 Administración: Panel de control para gestionar productos, categorías, países, estados y ciudades.
 
