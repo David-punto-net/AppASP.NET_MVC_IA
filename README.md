@@ -1,7 +1,7 @@
 # AppVentas
 # Proyecto ASP.NET MVC con .NET 8
 
-Este proyecto es una sistema de gestión de productos con un Dashboard interactivo y un agente de inteligencia artificial integrado mediante Azure OpenAI.
+Este proyecto es una sistema de gestión de productos y un agente de inteligencia artificial integrado mediante Azure OpenAI.
 # Características Principales
 
 Autenticación y Autorización: Implementación de login, logout, registro de usuarios, recuperación de contraseña y bloqueo por intentos fallidos.
