@@ -10,7 +10,7 @@ Gestión de Usuarios: Administración de roles y permisos, confirmación de corr
 
 Carro de Compras: Agregado de productos al carrito, gestión de pedidos y pasarela de pagos Webpay plus.
 
-Pasarela de Pago: Pagos mediante Webpay plus.
+Pasarela de Pago: Webpay plus.
 
 Administración: Panel de control para gestionar productos, categorías, países, regiones, comunas y ciudades.
 
