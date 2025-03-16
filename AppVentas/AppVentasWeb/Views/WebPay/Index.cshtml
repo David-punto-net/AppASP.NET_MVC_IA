@@ -1,0 +1,29 @@
+﻿@model AppVentasWeb.Models.WebPayResponseViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<flash dismissable="true" />
+
+<div class="card">
+    <div class="card-header">
+
+        <h5 class="card-title"><i class="fa-solid fa-cart-shopping"></i> Pago Webpay</h5>
+    </div>
+    <div class="card-body">
+
+        <p>N° Orden: @ViewBag.BuyOrder</p>
+        <p>Valor $: @ViewBag.Amount</p>
+        <p>@Html.DisplayNameFor(model => model.Url): @Html.DisplayFor(model => model.Url)</p>
+        <p>@Html.DisplayNameFor(model => model.Token): @Html.DisplayFor(model => model.Token)</p>
+        <p>@Html.DisplayNameFor(model => model.UrlCompleta): @Html.DisplayFor(model => model.UrlCompleta)</p>
+
+
+        <form action="@Model.Url" method="post">
+            <input type="hidden" name="token_ws" value="@Model.Token" />
+            <button type="submit" class="btn btn-primary">Pagar</button>
+        </form>
+
+    </div>
+</div>
+

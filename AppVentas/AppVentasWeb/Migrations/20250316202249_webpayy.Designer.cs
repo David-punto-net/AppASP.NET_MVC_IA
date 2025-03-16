@@ -4,6 +4,7 @@ using AppVentasWeb.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppVentasWeb.Migrations
 {
     [DbContext(typeof(DataContex))]
-    partial class DataContexModelSnapshot : ModelSnapshot
+    [Migration("20250316202249_webpayy")]
+    partial class webpayy
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -457,10 +460,6 @@ namespace AppVentasWeb.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
-                    b.Property<string>("Token")
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
                     b.Property<DateTime?>("TransactionDate")
                         .HasColumnType("datetime2");
 
@@ -710,7 +709,7 @@ namespace AppVentasWeb.Migrations
             modelBuilder.Entity("AppVentasWeb.Data.Entidades.WebpayRest", b =>
                 {
                     b.HasOne("AppVentasWeb.Data.Entidades.Sale", "Sale")
-                        .WithMany("WebpayRests")
+                        .WithMany()
                         .HasForeignKey("SaleId");
 
                     b.Navigation("Sale");
@@ -799,8 +798,6 @@ namespace AppVentasWeb.Migrations
             modelBuilder.Entity("AppVentasWeb.Data.Entidades.Sale", b =>
                 {
                     b.Navigation("SaleDetails");
-
-                    b.Navigation("WebpayRests");
                 });
 
             modelBuilder.Entity("AppVentasWeb.Data.Entidades.User", b =>

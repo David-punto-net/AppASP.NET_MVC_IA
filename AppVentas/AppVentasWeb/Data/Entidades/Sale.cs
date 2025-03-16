@@ -22,6 +22,8 @@ namespace AppVentasWeb.Data.Entidades
         public OrderStatus OrderStatus { get; set; }
         public ICollection<SaleDetail> SaleDetails { get; set; }
 
+        public ICollection<WebpayRest> WebpayRests { get; set; }
+
         [DisplayFormat(DataFormatString = "{0:N0}")]
         [Display(Name = "Líneas")]
         public int Lines => SaleDetails == null ? 0 : SaleDetails.Count;

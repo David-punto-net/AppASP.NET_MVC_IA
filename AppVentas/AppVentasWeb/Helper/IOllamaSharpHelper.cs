@@ -6,7 +6,7 @@ namespace AppVentasWeb.Helper
     {
         OllamaApiClient GetChatOllamaApiClient(int IdModelo);
 
-        Task<string> GetRespuestaOllamaAsync(string userMensaje);
+        Task<string> GetRespuestaOllamaAsync(string userMensaje, string schemaInfo);
         Task<string> GetRespuestaOllamaFinalAsync(string userMensaje, string DatosBd);
 
     }

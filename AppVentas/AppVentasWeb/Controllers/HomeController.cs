@@ -1,6 +1,7 @@
 using AppVentasWeb.Common;
 using AppVentasWeb.Data;
 using AppVentasWeb.Data.Entidades;
+using AppVentasWeb.DTOs;
 using AppVentasWeb.Helper;
 using AppVentasWeb.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -253,14 +254,17 @@ namespace AppVentasWeb.Controllers
             .Where(ts => ts.User.Id == user.Id)
             .ToListAsync();
 
-            Response response = await _ordersHelper.ProcessOrderAsync(model);
+            TempData["MontoTotal"] = model.Value.ToString();
+            return RedirectToAction("Index", "WebPay");
 
-            if (response.IsSuccess)
-            {
-                return RedirectToAction(nameof(OrderSuccess));
-            }
-            ModelState.AddModelError(string.Empty, response.Message);
-            return View(model);
+            //Response response = await _ordersHelper.ProcessOrderAsync(model);
+
+            //if (response.IsSuccess)
+            //{
+            //    //return RedirectToAction(nameof(OrderSuccess));
+            //}
+            //ModelState.AddModelError(string.Empty, response.Message);
+            //return View(model);
         }
 
         public async Task<IActionResult> DecreaseQuantity(int? id)

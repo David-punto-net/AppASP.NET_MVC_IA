@@ -138,44 +138,16 @@ namespace AppVentasWeb.Controllers
         {
             if (ModelState.IsValid)
             {
+                string userInput = model.Userimput;
+                string schemaJson = GetDatabaseSchema();
 
-                ChatHistory history = new ChatHistory();
-                var schemaBd = GetDatabaseSchemaJson();
+                string repuestaIASql = await _ollamaSharpHelper.GetRespuestaOllamaAsync(userInput, schemaJson);
 
+                var datosJson = await GetEntitiesAsJsonAsync(repuestaIASql);
 
-               
+                var respuestaAI = await _ollamaSharpHelper.GetRespuestaOllamaFinalAsync(userInput, datosJson);
 
-               string msjSystem = @"Eres un generador de querys SQL. Devuelve solo T-SQL, sin ninguna explicación adicional, para las siguientes tablas: @"
-                                   + schemaBd + ". Siempre debes usar alias para las columnas relacionado con la informacion a mostrar, NO debes generar querys que realizen cambios en la base de datos del tipo: INSERT,UPDATE,DELETE,DROP. La respuesta NO debe incluir caracteres como ```sql";
-
-
-                history.AddSystemMessage(msjSystem);
-
-
-                OpenAIPromptExecutionSettings executionSettings = new()
-                {
-                    ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions,
-                    Temperature = 0.1,
-                    TopP = 1.0,
-                };
-
-                history.AddUserMessage(model.Userimput);
-
-                var chatCompletionService = _kernel.GetRequiredService<IChatCompletionService>();
-                var result = await chatCompletionService.GetChatMessageContentAsync(model.Userimput, executionSettings, _kernel);
-
-
-                history.AddAssistantMessage(result.Items[0].ToString());
-
-                //var datosBd = await GetEntitiesAsJsonAsync(result.Items[0].ToString());
-
-                //var respuestaAI = await _ollamaSharpHelper.GetRespuestaOllamaFinalAsync(userInput, datosBd);
-
-                //historial.Add("Asistente: " + Markdown.ToHtml(respuestaAI));
-
-                //model.Historial = historial;
-
-                model.RespuestaAsistente = Markdown.ToHtml(result.Items[0].ToString());
+                model.RespuestaAsistente = Markdown.ToHtml(respuestaAI);
             }
 
             return View("AgenteAI", model);

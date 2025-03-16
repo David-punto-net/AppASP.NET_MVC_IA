@@ -4,6 +4,7 @@ using AppVentasWeb.Data.Entidades;
 using AppVentasWeb.Enum;
 using AppVentasWeb.Models;
 using Microsoft.EntityFrameworkCore;
+using OllamaSharp.Models;
 
 namespace AppVentasWeb.Helper
 {
@@ -23,13 +24,15 @@ namespace AppVentasWeb.Helper
             {
                 return response;
             }
+
             Sale sale = new()
             {
                 Date = DateTime.UtcNow,
                 User = model.User,
                 Remarks = model.Remarks,
                 SaleDetails = new List<SaleDetail>(),
-                OrderStatus = OrderStatus.Nuevo
+                OrderStatus = OrderStatus.Pagado,
+                WebpayRests = new List<WebpayRest>()
             };
             foreach (TemporalSale item in model.TemporalSales)
             {
@@ -48,6 +51,22 @@ namespace AppVentasWeb.Helper
                 }
 
                 _context.TemporalSales.Remove(item);
+            }
+
+            foreach (WebPayCommitViewModel item in model.WebpayViewModels)
+            {
+                sale.WebpayRests.Add(new WebpayRest
+                {
+                    Vci = item.Vci,
+                    Amount = item.Amount,
+                    Status = item.Status,
+                    BuyOrder = item.BuyOrder,
+                    SessionId = item.SessionId,
+                    AccountingDate = item.AccountingDate,
+                    TransactionDate = item.TransactionDate,
+                    AuthorizationCode = item.AuthorizationCode,
+                    Token = item.TokenWebpay
+                });
             }
 
             _context.Sales.Add(sale);

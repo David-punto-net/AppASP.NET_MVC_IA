@@ -24,6 +24,7 @@ namespace AppVentasWeb.Data
 
         public DbSet<Sale> Sales { get; set; }
         public DbSet<SaleDetail> SaleDetails { get; set; }
+        public DbSet<WebpayRest> WebpayRests { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

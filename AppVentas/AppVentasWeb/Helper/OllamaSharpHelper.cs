@@ -67,12 +67,12 @@ namespace AppVentasWeb.Helper
             return jsonSchema;
         }
 
-        public async Task<string> GetRespuestaOllamaAsync(string userMensaje)
+        public async Task<string> GetRespuestaOllamaAsync(string userMensaje, string schemaInfo)
         {
-            var schemaBd = GetDatabaseSchemaJson();
+         
 
             string msjSystem = "Eres un generador de querys SQL. Devuelve solo T-SQL, sin ninguna explicación adicional, para las siguientes tablas: "
-                + schemaBd + ". Siempre debes usar alias para las columnas que se relacionen con la informacion a mostrar, NO debes generar querys que realizen cambios en la base de datos del tipo: INSERT,UPDATE,DELETE,DROP. La respuesta NO debe incluir caracteres como ```sql";
+                + schemaInfo + ". Siempre debes usar alias para las columnas que se relacionen con la informacion a mostrar, NO debes generar querys que realizen cambios en la base de datos del tipo: INSERT,UPDATE,DELETE,DROP. La respuesta NO debe incluir caracteres como ```sql";
 
             var ollama = GetChatOllamaApiClient(1);
             var chat = new Chat(ollama, msjSystem);

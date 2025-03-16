@@ -13,11 +13,13 @@ namespace AppVentasWeb.Models
 
         public ICollection<TemporalSale> TemporalSales { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:N2}")]
+        public ICollection<WebPayCommitViewModel> WebpayViewModels { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:N0}")]
         [Display(Name = "Cantidad")]
         public float Quantity => TemporalSales == null ? 0 : TemporalSales.Sum(ts => ts.Quantity);
 
-        [DisplayFormat(DataFormatString = "{0:C2}")]
+        [DisplayFormat(DataFormatString = "{0:N0}")]
         [Display(Name = "Valor")]
         public decimal Value => TemporalSales == null ? 0 : TemporalSales.Sum(ts => ts.Value);
     }
