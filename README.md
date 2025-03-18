@@ -4,6 +4,8 @@
 Este proyecto es una sistema de gestión de productos y un agente de inteligencia artificial integrado mediante Azure OpenAI. El agente responde preguntas en tiempo real sobre ventas, clientes, productos en stock y compras diarias, optimizando la toma de decisiones para los administradores del sistema.
 # Características Principales
 
+IA: Habilitado para LLM en la nube con Azure Open AI (GPT-4o-mini) y LLM local con Ollama y LLama3.1 8.B
+
 Autenticación y Autorización: Implementación de login, logout, registro de usuarios, recuperación de contraseña y bloqueo por intentos fallidos.
 
 Gestión de Usuarios: Administración de roles y permisos, confirmación de correo y seguridad en accesos.
