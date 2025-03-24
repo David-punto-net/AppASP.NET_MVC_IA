@@ -1,5 +1,5 @@
 # AppVentas
-# Proyecto ASP.NET MVC con .NET 8
+# Proyecto ASP.NET MVC con .NET 8 + IA
 
 Este proyecto es una sistema de gestión de productos y un agente de inteligencia artificial integrado mediante Azure OpenAI. El agente responde preguntas en tiempo real sobre ventas, clientes, productos en stock y compras diarias, optimizando la toma de decisiones para los administradores del sistema.
 # Características Principales
